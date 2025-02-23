@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="admindash.css">
+</head>
+<body class="bg-light">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="nav flex-column">
+            <a class="nav-link active" href="#" data-section="Progress">Progress</a>
+            <a class="nav-link" href="#" data-section="expiring">Expiring Plans</a>
+            <a class="nav-link" href="#" data-section="manage">Manage Plans</a>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container-fluid">
+            <button class="navbar-toggler" id="sidebarToggle">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <span class="navbar-brand">Admin Dashboard</span>
+            <button class="btn">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Progress Section -->
+        <div id="Progress" class="dashboard-section">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="dashboard-card">
+                        <h5>Monthly Revenue</h5>
+                        <h2 class="text-custom">$24,500</h2>
+                        <p class="text-success">↑ 10% from last month</p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="dashboard-card">
+                        <h5>Recharge Trends</h5>
+                        <div class="chart-container">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="dashboard-card">
+                        <h5>Revenue Breakdown</h5>
+                        <div class="chart-container">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="dashboard-card">
+                        <h5>Payment Modes</h5>
+                        <div class="chart-container">
+                            <canvas id="doughnutChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expiring Plans Section -->
+        <div id="expiring" class="dashboard-section d-none">
+            <div class="table-container">
+                <h4>Expiring Plans</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Subscriber</th>
+                                <th>Plan</th>
+                                <th>Expiry Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expiringTable">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manage Plans Section -->
+        <div id="manage" class="dashboard-section d-none">
+            <div class="dashboard-card mb-4">
+                <h4>Add New Plan</h4>
+                <form id="planForm" class="row g-3">
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" id="planName" placeholder="Plan Name" required>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="number" class="form-control" id="planPrice" placeholder="Price" required>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" id="dataLimit" placeholder="Data Limit" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" id="validity" placeholder="Validity (days)" required>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-primary w-100">Add</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="table-container">
+                <h4>Available Plans</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Plan Name</th>
+                                <th>Price</th>
+                                <th>Data Limit</th>
+                                <th>Validity</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="plansTable">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Plan Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Plan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <input type="hidden" id="editId">
+                        <div class="mb-3">
+                            <label class="form-label">Plan Name</label>
+                            <input type="text" class="form-control" id="editName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Price</label>
+                            <input type="number" class="form-control" id="editPrice" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Data Limit</label>
+                            <input type="text" class="form-control" id="editData" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Validity (days)</label>
+                            <input type="number" class="form-control" id="editValidity" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="updatePlan()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="admindash.js"></script>
+</body>
+</html>

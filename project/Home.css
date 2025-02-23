@@ -1,0 +1,139 @@
+
+        .navbar {
+            background-color: #2C3E50 !important;
+        }
+      
+        .nav-link {
+            color: #ECF0F1 !important;
+            font-size: 1.1rem;
+            transition: color 0.3s ease-in-out;
+        }
+        .nav-link:hover {
+            color: #000000 !important;
+        }
+        .dropdown-menu {
+            background-color: #34495E;
+            border: none;
+        }
+        .dropdown-item {
+            color: #000000 !important;
+        }
+        .dropdown-item:hover {
+            background-color: #4985de !important;
+            color: #ffffff !important;
+        }
+        #authButton {
+            background-color: #F39C12;
+            color: #ffffff;
+            font-weight: bold;
+            border: none;
+        }
+        
+        /*quick recharge*/
+        .quick-recharge {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        .btn-recharge {
+            background-color: #2a28a7 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+        .btn-recharge:hover {
+            background-color: #413fb5 !important;
+        }
+        /* Remove blue outline on focus */
+button:focus, 
+input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: #ccc !important; /* Optional: Change border color */
+}
+
+/* Remove blue outline on focus */
+button:focus, 
+input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: #ccc !important; /* Optional: Change border color */
+}
+/* Carousel Styling */
+.carousel {
+    max-width: 80%; /* Reduce width */
+    margin: auto; /* Center the carousel */
+    border-radius: 15px; /* Smooth edges */
+    overflow: hidden; /* Ensure rounded corners apply properly */
+    margin-top: 10px;
+}
+
+.carousel-inner img {
+    border-radius: 15px; /* Apply rounded corners to images */
+    max-height: 400px; /* Adjust height */
+    object-fit: cover; /* Ensure images fit well */
+}
+.card {
+        margin: 10px;
+        height: 100%; /* Ensure all cards have the same height */
+}
+.carousel-item {
+        padding: 20px 0; /* Add padding to the carousel slides */
+}
+
+ /* Container for the scrolling reviews */
+ .reviews-scroll-container {
+    width: 100%;
+    overflow: hidden; /* Hide overflow to create a scrolling effect */
+    position: relative;
+}
+
+/* Scrolling wrapper for the reviews */
+.reviews-scroll {
+    display: flex;
+    animation: scrollReviews 20s linear infinite; /* Animation for continuous scrolling */
+}
+
+/* Individual review card styling */
+.review-card {
+    flex: 0 0 auto;
+    width: 300px; /* Fixed width for each card */
+    margin: 0 15px; /* Spacing between cards */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+/* Animation for continuous scrolling */
+@keyframes scrollReviews {
+    0% {
+        transform: translateX(0); /* Start from the original position */
+    }
+    100% {
+        transform: translateX(-50%); /* Move left by 50% of the total width */
+    }
+}
+
+#scrollToTopBtn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    border: none;
+    outline: none;
+    background-color: #2a28a7;
+    color: white;
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 50%;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+#scrollToTopBtn:hover {
+    background-color: #413fb5;
+}

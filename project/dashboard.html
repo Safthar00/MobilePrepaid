@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="dashboard.js"></script>
+</head>
+<body>
+<!--Navbar-->
+<nav>
+    <li class="nav-item">
+    <a class="nav-link" href="Home.html">
+        <i class="fas fa-house me-2"></i>Home Page
+    </a>
+</li>
+</nav>
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Welcome back, User!</h2>
+            <p class="text-muted">Here's your account overview</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <button class="btn btn-custom" id="recharge" onclick="showPage('plansPage')">
+                <i class="fas fa-sync-alt me-2"></i>Recharge Now
+            </button>
+        </div>
+    </div>
+
+    <!-- Usage Statistics -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="dashboard-card p-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Data Usage</h5>
+                    <i class="fas fa-chart-pie text-primary fa-lg"></i>
+                </div>
+                <h3 class="mb-3">1.2 GB / 2.5 GB</h3>
+                <div class="usage-bar">
+                    <div class="usage-progress" style="width: 48%"></div>
+                </div>
+                <p class="text-muted mt-2 mb-0">52% remaining</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card p-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Voice Balance</h5>
+                    <i class="fas fa-phone-alt text-success fa-lg"></i>
+                </div>
+                <h3 class="mb-3">Unlimited</h3>
+                <p class="text-muted mb-0">Valid for 65 days</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card p-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">SMS Balance</h5>
+                    <i class="fas fa-comment-alt text-info fa-lg"></i>
+                </div>
+                <h3 class="mb-3">100 / day</h3>
+                <p class="text-muted mb-0">Renews daily</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4 class="mb-3">Quick Actions</h4>
+            <div class="quick-actions row g-3">
+                <div class="col-md-3">
+                    <button class="btn btn-light w-100">
+                        <i class="fas fa-history text-primary me-2"></i>
+                        View History
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-light w-100">
+                        <i class="fas fa-gift text-danger me-2"></i>
+                        Special Offers
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-light w-100">
+                        <i class="fas fa-cog text-warning me-2"></i>
+                        Settings
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-light w-100">
+                        <i class="fas fa-headset text-info me-2"></i>
+                        Support
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="dashboard-card p-4 bg-white">
+        <h4 class="mb-4">Recent Transactions</h4>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Plan</th>
+                        <th>Amount</th>
+                        <th>Validity</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>23 Feb 2025</td>
+                        <td>Premium Pack</td>
+                        <td>₹499</td>
+                        <td>84 days</td>
+                        <td><span class="badge bg-success">Success</span></td>
+                    </tr>
+                    <tr>
+                        <td>15 Jan 2025</td>
+                        <td>Data Add-on</td>
+                        <td>₹98</td>
+                        <td>7 days</td>
+                        <td><span class="badge bg-success">Success</span></td>
+                    </tr>
+                    <tr>
+                        <td>1 Jan 2025</td>
+                        <td>Basic Pack</td>
+                        <td>₹199</td>
+                        <td>28 days</td>
+                        <td><span class="badge bg-success">Success</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <button id="scrollToTopBtn" title="Go to top" onclick="location.href='#top'">↑</button>
+</div>
+
+
+
+</body>
+</html>
