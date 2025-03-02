@@ -1,0 +1,338 @@
+body {
+    background-color: #f4f4f4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+    /* background-color: #2C3E50 !important; */
+    background: linear-gradient(to right, #2C3E50, #2c5e9e) !important;
+
+    
+}
+
+.nav-link {
+    color: #ECF0F1 !important;
+    font-size: 1.1rem;
+    transition: color 0.3s ease-in-out;
+}
+.nav-link:hover {
+    color: #000000 !important;
+}
+.dropdown-menu {
+    background-color: #34495E;
+    border: none;
+}
+.dropdown-item {
+    color: #000000 !important;
+}
+.dropdown-item:hover {
+    background-color: #4985de !important;
+    color: #ffffff !important;
+}
+.btn-light {
+    background-color: #F39C12;
+    color: #ffffff;
+    font-weight: bold;
+    border: none;
+}
+#authButton {
+    background-color: #F39C12;
+    color: #ffffff;
+    font-weight: bold;
+    border: none;
+}
+
+/* Navbar toggle button fixes */
+.navbar-toggler {
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 0.25rem;
+    transition: all 0.3s ease;
+    display: none; /* Hide by default on larger screens */
+}
+
+.navbar-toggler:focus {
+    outline: none;
+}
+
+.navbar-toggler-icon {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+}
+
+/* Make sure toggle is visible on smaller screens */
+@media (max-width: 991.98px) {
+    .navbar-toggler {
+        display: block;
+    }
+    
+    
+    /* Adjust spacing in collapsed navbar */
+    .navbar-nav {
+        padding-top: 10px;
+    }
+    
+    /* Make sure dropdown menu appears properly */
+    .dropdown-menu {
+        position: static !important;
+        float: none;
+        width: 100%;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+} 
+
+/* Additional fixes for very small screens */
+@media (max-width: 576px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    #authButton {
+        margin-top: 10px;
+    }
+    
+    .navbar .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+/*label*/
+#rechargeDetails {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+#enteredNumber {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 3px;
+    width: 60%;
+    max-width: 250px;
+    margin-right: 10px;
+}
+
+#storedRecharge {
+    background-color: #2a28a7;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 3px;
+}
+
+#changeRecharge {
+    color: #2a28a7;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+#changeRecharge:hover {
+    text-decoration: underline;
+}
+
+/*sidebar*/
+.sidebar {
+    background-color: #2C3E50;
+    color: white;
+    min-height: 100vh;
+    padding: 20px;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+    transition: all 0.3s ease;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #34495E;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar a:hover {
+    background: #F39C12;
+    transform: translateX(5px);
+}
+
+.card {
+    margin-bottom: 20px;
+    transition: transform 0.3s, background-color 0.3s;
+    height: 90%;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    background-color: #f8f9fa;
+}
+
+/* Responsive styles */
+@media (max-width: 991.98px) {
+    .sidebar {
+        min-height: auto;
+        position: static;
+        margin-bottom: 20px;
+    }
+    
+    #plansContainer .col-md-4 {
+        width: 50%;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .row {
+        flex-direction: column;
+    }
+    
+    .col-md-3, .col-lg-2 {
+        width: 100%;
+    }
+    
+    main.col-md-9, main.col-lg-10 {
+        width: 100%;
+    }
+    
+    #plansContainer .col-md-4 {
+        width: 100%;
+    }
+    
+    #enteredNumber {
+        width: 100%;
+        max-width: none;
+        margin-right: 0;
+    }
+    
+    #rechargeDetails {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    #rechargeDetails label {
+        margin-bottom: 5px;
+    }
+}
+
+/* For very small screens */
+@media (max-width: 400px) {
+    .card-body {
+        padding: 10px;
+    }
+    
+    .card-title {
+        font-size: 1.2rem;
+    }
+    
+    .card-text {
+        font-size: 0.9rem;
+    }
+    
+    #categoryTitle {
+        font-size: 1.5rem;
+    }
+    
+    .sidebar h4 {
+        font-size: 1.2rem;
+    }
+    
+    .sidebar a {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+}
+
+/* For tablets in portrait mode */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .sidebar {
+        padding: 15px;
+    }
+    
+    .sidebar a {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+}
+
+/* For landscape orientation on mobile devices */
+@media (max-height: 500px) and (orientation: landscape) {
+    .sidebar {
+        min-height: auto;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    
+    .sidebar a {
+        display: inline-block;
+        width: calc(50% - 10px);
+        margin-right: 10px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .sidebar, .navbar {
+        display: none;
+    }
+    
+    .card:hover {
+        transform: none;
+    }
+}
+
+
+
+/* Styles for the mobile number modal */
+.modal-title {
+  font-weight: 600;
+}
+
+.modal-body .form-label {
+  font-weight: 500;
+}
+
+#modalMobileNumber {
+  padding: 10px;
+  font-size: 16px;
+}
+
+#modalErrorMsg {
+  font-size: 14px;
+}
+
+.modal-footer .btn {
+  padding: 8px 20px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0069d9;
+  border-color: #0062cc;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}

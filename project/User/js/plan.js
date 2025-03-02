@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Simulate login
             isLoggedIn = true;
             authButton.textContent = "Logout";
-            window.location.href = "dashboard.html";
+            window.location.href = "/project/User/html/otp.html";
         } else {
             isLoggedIn = false;
             authButton.textContent = "Login";
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // const rechargeLink = document.getElementById("rechargeDropdown");
     // rechargeLink.addEventListener("click", function (event) {
     //     if (isLoggedIn) {
-    //         window.location.href = "dashboard.html";
+    //         window.location.href = "/project/User/html/dashboard.html";
     //     }
     // });
 });
@@ -63,7 +63,7 @@ function showAllPlans() {
                             <p class="card-text">Data: ${plan.data} GB</p>
                             <p class="card-text">Validity: ${plan.duration} Days</p>
                             <p class="card-text"><strong>OTT: ${plan.ott}</strong></p>
-                            <button class="btn" onclick="location.href='payment.html';" style="background-color:#2a28a7; color: white;">Recharge</button>
+                            <button class="btn" onclick="buyNow('${plan.price}','${plan.data}','${plan.duration}','${plan.ott}')" style="background-color:#2a28a7; color: white;">Recharge</button>
                         </div>
                     </div>
                 </div>`;
@@ -79,32 +79,97 @@ document.addEventListener("DOMContentLoaded", function () {
     const storedRecharge = document.getElementById("storedRecharge");
     const enteredNumber = document.getElementById("enteredNumber");
     const changeRecharge = document.getElementById("changeRecharge");
+    const prepaidPopoverModal = new bootstrap.Modal(document.getElementById('prepaidPopoverModal'));
+    const prepaidMobileInput = document.getElementById("prepaidMobileNumber");
+    const prepaidErrorMsg = document.getElementById("prepaidErrorMsg");
+    const prepaidSubmitBtn = document.getElementById("prepaidSubmitBtn");
 
-    // Check if the user navigated from the Prepaid link
-    const isFromPrepaidLink = localStorage.getItem("fromPrepaidLink");
+    // Flag to track if user came from prepaid link
+    let isFromPrepaid = false;
+    if (localStorage.getItem("fromPrepaidLink") === "true") {
+        isFromPrepaid = true;
+        localStorage.removeItem("fromPrepaidLink"); // Clear after checking
+    }
 
-    if (isFromPrepaidLink === "true") {
-        // Hide the "Recharge for" section if navigated from the Prepaid link
-        rechargeDetails.style.display = "none";
-        localStorage.removeItem("fromPrepaidLink"); // Clear the flag
-    } else if (storedNumber) {
-        // Display the stored mobile number if available
+    // Display stored mobile number if available
+    if (storedNumber && !isFromPrepaid) {
         enteredNumber.value = storedNumber;
-        storedRecharge.innerText = storedNumber;
-        rechargeDetails.style.display = "block"; // Ensure the section is visible
+        // localStorage.removeItem("stroedRecharge");
+        rechargeDetails.style.display = "block";
     } else {
-        // Hide the "Recharge for" section if no mobile number is stored
         rechargeDetails.style.display = "none";
     }
 
-    // Redirect to home page when "Change" is clicked
-    if (changeRecharge) {
-        changeRecharge.addEventListener("click", function (event) {
-            event.preventDefault(); // Prevent default link behavior
-            localStorage.removeItem("rechargeNumber"); // Clear the stored number
-            window.location.href = "Home.html"; // Redirect to the home page
-        });
-    }
+    // Variable to store pending plan details
+    let pendingPlan = null;
+
+    // Handle modal submission
+    prepaidSubmitBtn.addEventListener("click", function () {
+        const mobileNumber = prepaidMobileInput.value.trim();
+        const mobilePattern = /^[6-9]\d{9}$/; // Validate Indian mobile number
+
+        if (mobilePattern.test(mobileNumber)) {
+            localStorage.setItem("rechargeNumber", mobileNumber);
+            localStorage.setItem("mobileNumber", mobileNumber); // Sync with other pages
+            enteredNumber.value = mobileNumber;
+            storedRecharge.innerText = mobileNumber;
+            rechargeDetails.style.display = "block";
+            prepaidPopoverModal.hide();
+
+            // Proceed with pending plan if exists
+            if (pendingPlan) {
+                localStorage.setItem("planPrice", pendingPlan.price);
+                localStorage.setItem("planData", pendingPlan.data);
+                localStorage.setItem("planValidity", pendingPlan.duration);
+                localStorage.setItem("planOtt", pendingPlan.ott);
+                window.location.href = "/project/User/html/payment.html";
+                pendingPlan = null;
+            }
+        } else {
+            prepaidErrorMsg.style.display = "block"; // Show error if invalid
+        }
+    });
+
+   // Clear error message on input
+   prepaidMobileInput.addEventListener("input", function () {
+    prepaidErrorMsg.style.display = "none";
+});
+
+    // Handle "Change" link
+    changeRecharge.addEventListener("click", function (event) {
+        event.preventDefault();
+        localStorage.removeItem("rechargeNumber");
+        window.location.href = "/project/User/html/Home.html";
+    });
+    //recharge button handle
+window.buyNow = function(price, data, duration, ott) {
+        if (isFromPrepaid) {
+            // Show modal for prepaid link users
+            pendingPlan = { price, data, duration, ott };
+            prepaidMobileInput.value = localStorage.getItem("rechargeNumber") || "";
+            prepaidPopoverModal.show();
+        } else {
+            const mobileNumber = localStorage.getItem("rechargeNumber") || localStorage.getItem("mobileNumber");
+            if (mobileNumber) {
+                // Proceed to payment if number exists
+                localStorage.setItem("mobileNumber", mobileNumber);
+                localStorage.setItem("rechargeNumber", mobileNumber);
+                localStorage.setItem("planPrice", price);
+                localStorage.setItem("planData", data);
+                localStorage.setItem("planValidity", duration);
+                localStorage.setItem("planOtt", ott);
+                window.location.href = "/project/User/html/payment.html";
+            } else {
+                // Show modal if no number is stored
+                pendingPlan = { price, data, duration, ott };
+                prepaidMobileInput.value = "";
+                prepaidPopoverModal.show();
+            }
+        }
+    };
+
+    // Load all plans (function unchanged, omitted for brevity)
+    showAllPlans();
 });
 
 
@@ -139,7 +204,7 @@ function filterPlans() {
                             <p class="card-text">Data: ${plan.data} GB</p>
                             <p class="card-text">Validity: ${plan.duration} Days</p>
                             <p class="card-text"><strong>OTT: ${plan.ott}</strong></p>
-                            <button class="btn" onclick="location.href='payment.html';" style="background-color:#2a28a7; color: white;">Recharge</button>
+                            <button class="btn" onclick="buyNow('${plan.price}','${plan.data}','${plan.duration}','${plan.ott}')" style="background-color:#2a28a7; color: white;">Recharge</button>
                         </div>
                     </div>
                 </div>`;
@@ -171,11 +236,12 @@ function showPlans(category) {
                     <p class="card-text">Data: ${plan.data} GB</p>
                     <p class="card-text">Validity: ${plan.duration} Days</p>
                     <p class="card-text"><strong>OTT: ${plan.ott}</strong></p>
-                    <button class="btn" onclick="location.href='payment.html';" style="background-color:#2a28a7; color: white;">Recharge</button>
+                    <button class="btn" onclick="buyNow('${plan.price}','${plan.data}','${plan.duration}','${plan.ott}')" style="background-color:#2a28a7; color: white;">Recharge</button>
                 </div>
             </div>
         </div>`).join("");
 }
+
 
 // Function to filter plans based on search input
 function filterPlans() {
@@ -203,7 +269,7 @@ function filterPlans() {
                             <p class="card-text">Data: ${plan.data} GB</p>
                             <p class="card-text">Validity: ${plan.duration} Days</p>
                             <p class="card-text"><strong>OTT: ${plan.ott}</strong></p>
-                            <button class="btn" onclick="location.href='payment.html';" style="background-color:#2a28a7; color: white;">Recharge</button>
+                            <button class="btn" onclick="buyNow('${plan.price}','${plan.data}','${plan.duration}','${plan.ott}')" style="background-color:#2a28a7; color: white;">Recharge</button>
                         </div>
                     </div>
                 </div>`;
@@ -216,6 +282,7 @@ function filterPlans() {
         showAllPlans(); // Ensure all plans are shown again when search is cleared
     }
 }
+
 
 // Event listener for search bar
 document.addEventListener("DOMContentLoaded", function () {
@@ -230,3 +297,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Load all plans when the page opens
 document.addEventListener("DOMContentLoaded", showAllPlans);
+
+function selectPlan(planName, amount) {
+    localStorage.setItem("selectedPlan", planName);
+    localStorage.setItem("planAmount", amount);
+    window.location.href = "/project/User/html/payment.html"; // Redirect to payment page
+}

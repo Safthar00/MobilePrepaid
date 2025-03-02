@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Details</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Modal Structure -->
+    <div class="modal fade show d-block" id="detailsModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Details Table</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Table inside modal -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>City</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Arun</td>
+                                    <td>25</td>
+                                    <td>Chennai</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Swetha</td>
+                                    <td>22</td>
+                                    <td>Coimbatore</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Karthik</td>
+                                    <td>28</td>
+                                    <td>Madurai</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="window.location.href='dashboard.html'">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Open modal automatically when the page loads
+        window.onload = function() {
+            var myModal = new bootstrap.Modal(document.getElementById('detailsModal'));
+            myModal.show();
+        };
+    </script>
+
+</body>
+</html>

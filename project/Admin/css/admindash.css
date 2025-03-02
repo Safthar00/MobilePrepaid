@@ -34,6 +34,7 @@
     left: var(--sidebar-width);
     height: var(--header-height);
     z-index: 1000;
+    background: linear-gradient(to right, #2C3E50, #2c5e9e) !important;
 }
 
 /* Sidebar Navigation */
@@ -45,7 +46,7 @@
 
 .nav-link:hover {
     background-color: rgba(255, 255, 255, 0.1);
-    color: white;
+    color: #2a28a7;
 }
 
 .nav-link.active {

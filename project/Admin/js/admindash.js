@@ -203,7 +203,7 @@ const renderExpiringPlans = () => {
             <td>${plan.plan}</td>
             <td>${plan.expiryDate}</td>
             <td>
-                <button class="btn btn-sm bg-custom me-1" onclick="window.open('details.html', '_blank')">View Details</button>
+                <button class="btn btn-sm bg-custom me-1" onclick="window.open('/project/User/html/details.html', '_blank')">View Details</button>
             </td>
         `;
         tbody.appendChild(row);

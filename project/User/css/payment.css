@@ -1,0 +1,194 @@
+/* Global Styles */
+:root {
+    --primary-color: #2C3E50;
+    --primary-dark: #2c5e9e;
+    --secondary-color: #4caf50;
+    --background-color: #f8f9fc;
+    --card-background: #ffffff;
+    --text-color: #333333;
+    --text-muted: #6c757d;
+    --border-color: #e5e7eb;
+    --success: #4caf50;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Navbar Styling */
+.navbar {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    background: linear-gradient(to right, var(--primary-color), var(--primary-dark)) !important;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: white !important;
+    letter-spacing: 0.5px;
+}
+
+/* Container Styling */
+.container {
+    max-width: 768px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Card Styling */
+.card {
+    border: none;
+    border-radius: 10px;
+    background-color: var(--card-background);
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* Heading Styles */
+h3.fw-bold, h4.fw-bold {
+    color: var(--primary-dark);
+    margin-bottom: 1.2rem;
+}
+
+/* Accordion Styling */
+.accordion-item {
+    border: 1px solid var(--border-color);
+    margin-bottom: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.accordion-button {
+    background-color: var(--card-background);
+    color: var(--text-color);
+    font-weight: 600;
+    padding: 15px 20px;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: rgba(58, 123, 213, 0.05);
+    color: var(--primary-color);
+    box-shadow: none;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: var(--primary-color);
+}
+
+.accordion-button img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.accordion-body {
+    padding: 20px;
+    background-color: rgba(248, 249, 252, 0.5);
+}
+
+/* Form Controls */
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 15px;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus, .form-select:focus {
+    box-shadow: none;
+    border-color: var(--primary-color);
+}
+
+/* Payment Summary Section */
+.card p {
+    margin-bottom: 8px;
+    color: var(--text-muted);
+}
+
+#summaryPlanName, #Price, #Data, #Duration, #Ott {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+#Price {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* Button Styling */
+.btn-primary {
+    background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(58, 123, 213, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(58, 123, 213, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 576px) {
+    .accordion-button {
+        padding: 12px 15px;
+        font-size: 0.95rem;
+    }
+    
+    .btn-primary {
+        padding: 10px 20px;
+    }
+}
+
+/* Animation for Pay Now button */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+.btn-primary:hover {
+    animation: pulse 1.5s infinite;
+}
+
+.btn-secondary {
+    background: linear-gradient(to right, var(--text-muted), #8a8a8a);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(108, 117, 125, 0.4);
+}
+
+.btn-secondary:active {
+    transform: translateY(1px);
+}

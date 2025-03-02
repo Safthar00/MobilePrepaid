@@ -5,10 +5,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Login/Logout functionality
     authButton.addEventListener("click", function () {
         if (!isLoggedIn) {
-            // Simulate login
             isLoggedIn = true;
             authButton.textContent = "Logout";
-            window.location.href = "dashboard.html";
+            window.location.href = "/project/User/html/otp.html";
         } else {
             isLoggedIn = false;
             authButton.textContent = "Login";
@@ -22,14 +21,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     rechargeNowBtn.addEventListener("click", function () {
         const mobileNumber = mobileNumberInput.value.trim();
-        const mobilePattern = /^[6-9]\d{9}$/; // Indian mobile number validation
+        const mobilePattern = /^[6-9]\d{9}$/; 
 
         if (mobilePattern.test(mobileNumber)) {
             localStorage.setItem("rechargeNumber", mobileNumber); // Store the mobile number
             localStorage.setItem("fromQuickRecharge", "true"); // Set flag for Quick Recharge
-            window.location.href = "plan.html"; // Redirect to Plan page
+            window.location.href = "/project/User/html/plan.html"; // Redirect to Plan page
         } else {
-            errorMsg.style.display = "block"; // Show error message
+            errorMsg.style.display = "block"; // Show error message           
         }
     });
 
@@ -39,6 +38,63 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
     
+    //popular plans
+document.addEventListener("DOMContentLoaded", function() {
+    // Get all plan selection buttons
+    const planButtons = document.querySelectorAll('.select-plan-btn');
+    const mobileNumberModal = new bootstrap.Modal(document.getElementById('mobileNumberModal'));
+    const modalMobileInput = document.getElementById('modalMobileNumber');
+    const modalErrorMsg = document.getElementById('modalErrorMsg');
+    const modalSubmitBtn = document.getElementById('modalSubmitBtn');
+    
+    let selectedPlanData = {};
+    
+    // Add click event to all plan buttons
+    planButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Store selected plan data
+            selectedPlanData = {
+                price: this.getAttribute('data-price'),
+                data: this.getAttribute('data-data'),
+                validity: this.getAttribute('data-validity'),
+                ott: this.getAttribute('data-ott')
+            };
+            
+            // Show mobile number modal
+            mobileNumberModal.show();
+        });
+    });
+    
+    // Handle mobile number input validation
+    modalMobileInput.addEventListener('input', function() {
+        modalErrorMsg.style.display = 'none';
+    });
+    
+    // Handle submit button in modal
+    modalSubmitBtn.addEventListener('click', function() {
+        const mobileNumber = modalMobileInput.value.trim();
+        const mobilePattern = /^[6-9]\d{9}$/; // Indian mobile number validation
+        
+        if (mobilePattern.test(mobileNumber)) {
+            // Store plan details and mobile number in localStorage
+            localStorage.setItem('planPrice', selectedPlanData.price);
+            localStorage.setItem('planData', selectedPlanData.data);
+            localStorage.setItem('planValidity', selectedPlanData.validity);
+            localStorage.setItem('planOtt', selectedPlanData.ott);
+            localStorage.setItem('mobileNumber', mobileNumber);
+            
+            // Navigate to payment page
+            window.location.href = '/project/User/html/payment.html';
+        } else {
+            // Show error message
+            modalErrorMsg.style.display = 'block';
+        }
+    });
+});
+
+
+
+
     
     //review
     document.addEventListener("DOMContentLoaded", function () {
