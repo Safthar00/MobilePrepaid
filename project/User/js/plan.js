@@ -25,26 +25,27 @@ const plans = {
 //navbar
 document.addEventListener("DOMContentLoaded", function () {
     const authButton = document.getElementById("authButton");
-    let isLoggedIn = false; // Simulating login state
-    
-    authButton.addEventListener("click", function () {
-        if (!isLoggedIn) {
-            // Simulate login
-            isLoggedIn = true;
-            authButton.textContent = "Logout";
-            window.location.href = "/project/User/html/otp.html";
-        } else {
-            isLoggedIn = false;
-            authButton.textContent = "Login";
-        }
-    });
+    function updateAuthButton() {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const isLoggedIn = user && user.token;
 
-    // const rechargeLink = document.getElementById("rechargeDropdown");
-    // rechargeLink.addEventListener("click", function (event) {
-    //     if (isLoggedIn) {
-    //         window.location.href = "/project/User/html/dashboard.html";
-    //     }
-    // });
+        if (isLoggedIn) {
+            authButton.textContent = "Profile";
+            authButton.className = "btn btn-primary"; // Optional: Style change
+            authButton.onclick = function () {
+                window.location.href = "/project/User/html/dashboard.html";
+            };
+        } else {
+            authButton.textContent = "Login";
+            authButton.className = "btn btn-outline-light"; // Match initial HTML class
+            authButton.onclick = function () {
+                window.location.href = "/project/User/html/otp.html";
+            };
+        }
+    }
+
+    // Initial update when page loads
+    updateAuthButton();
 });
 
 // Function to display all plans when the page loads

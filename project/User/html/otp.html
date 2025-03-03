@@ -257,7 +257,7 @@
 
             function generateOTP() {
                 let otp = Math.floor(1000 + Math.random() * 9000).toString();
-                sessionStorage.setItem('otp', otp); // Store OTP in session storage
+                sessionStorage.setItem('otp', otp); 
                 alert(otp); // Debugging: Remove in production
             }
 
@@ -268,13 +268,13 @@
 
             window.sendOTP = function() {
                 const mobile = document.getElementById('mobile').value;
-                if (validateMobileNumber(mobile)) {
-                    mobileErrorMessage.style.display = 'none'; // Hide error message
+                if (mobile.length === 10 && /^\d+$/.test(mobile)) {
+                    mobileErrorMessage.style.display = 'none'; 
                     generateOTP();
                     const otpModal = new bootstrap.Modal(document.getElementById('otpModal'));
                     otpModal.show();
                 } else {
-                    mobileErrorMessage.style.display = 'block'; // Show error message
+                    mobileErrorMessage.style.display = 'block'; 
                 }
             };
 
@@ -298,11 +298,17 @@
             verifyButton.addEventListener('click', function() {
                 let enteredOTP = Array.from(digitInputs).map(input => input.value).join('');
                 let storedOTP = sessionStorage.getItem('otp');
-
+                
                 if (enteredOTP === storedOTP) {
-                    localStorage.setItem("isLoggedIn","true");
                     successMessage.style.display = 'block';
                     errorMessage.style.display = 'none';
+
+                    const mobile = document.getElementById('mobile').value;
+                    localStorage.setItem('user', JSON.stringify({
+                        mobile: mobile,
+                        token: 'sample-token-' + Math.random().toString(36).substr(2) // Simulate a token
+                }));
+
                     setTimeout(() => {
                         window.location.href = '/project/User/html/dashboard.html'; // Redirect to dashboard
                     }, 1500);

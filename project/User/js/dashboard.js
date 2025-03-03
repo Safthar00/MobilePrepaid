@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-    //Element References
     // Navigation elements
     const sidebarToggle = document.getElementById("sidebarToggle");
     const sidebar = document.getElementById("sidebar");
@@ -24,6 +23,30 @@ document.addEventListener("DOMContentLoaded", function() {
     // Navigation links for smooth scrolling
     const navLinks = document.querySelectorAll('a[href^="#"]');
     
+    // Add this with the other element references at the top
+    const logoutLink = document.getElementById("logout-Link");
+
+    //store uesr in json
+    const userNameDisplay = document.querySelector(".sidebar .user-info h6"); // Target the h6 in user-info
+    const profileDropdownName = document.querySelector("#profileDropdown"); // Target the dropdown name
+
+    // Load user data from localStorage
+    const user = JSON.parse(localStorage.getItem("user")) || { name: "Safi", mobile: "+91 9876543210" };
+
+    function updateUserInfo() {
+        if (userNameDisplay) {
+            userNameDisplay.textContent = user.name || "Safi"; // Update sidebar username
+        }
+        if (profileDropdownName) {
+            profileDropdownName.innerHTML = `<i class="fas fa-user-circle"></i> ${user.name || "Safi"}`; // Update dropdown name
+        }
+        // Update mobile number if needed (already static in HTML, but could be dynamic)
+        const mobileDisplay = document.querySelector(".sidebar .user-info small");
+        if (mobileDisplay && user.mobile) {
+            mobileDisplay.textContent = user.mobile;
+        }
+    }
+
     //Sidebar Functionality
     function toggleSidebar() {
         sidebar.classList.toggle("show");
@@ -151,10 +174,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     function scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }
     
     function handleSmoothScroll(e) {
@@ -164,28 +184,48 @@ document.addEventListener("DOMContentLoaded", function() {
         
         const targetElement = document.querySelector(targetId);
         if (targetElement) {
-            // Close sidebar on mobile when navigating
             if (window.innerWidth <= 991.98) {
                 sidebar.classList.remove("show");
             }
-            
-            const headerOffset = 70; // Account for fixed header
+            const headerOffset = 70;
             const elementPosition = targetElement.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-            
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: "smooth"
-            });
+            window.scrollTo({ top: offsetPosition, behavior: "smooth" });
         }
     }
-    
+
+    window.selectPlan = function(amount, data, validity, ott) {
+        const phoneNumber = localStorage.getItem('rechargeNumber');
+        if (!phoneNumber) {
+            alert('Phone number not found. Please log in again.');
+            return;
+        }
+        const planDetails = {
+            amount: amount,
+            data: data,
+            validity: validity,
+            ott: ott,
+            phoneNumber: phoneNumber
+        };
+        localStorage.setItem('selectedPlan', JSON.stringify(planDetails));
+        window.location.href = '/project/User/html/plan.html';
+    };
+
+    // Note: Event listeners below are optional since you're using onclick.
+    // If you want to use them, update HTML buttons with class "recharge-btn" and remove onclick.
+    document.querySelectorAll('.recharge-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const amount = this.getAttribute('data-amount');
+            const data = this.getAttribute('data-data');
+            const validity = this.getAttribute('data-validity');
+            const ott = this.getAttribute('data-ott');
+            selectPlan(amount, data, validity, ott);
+        });
+    });
+
     //Initialize Event Listeners
     function initEventListeners() {
-        // Sidebar events
         sidebarToggle.addEventListener("click", toggleSidebar);
-        
-        // Notification events
         notificationBtn.addEventListener("click", toggleNotificationPanel);
         closeNotificationBtn.addEventListener("click", closeNotificationPanel);
         
@@ -222,36 +262,26 @@ document.addEventListener("DOMContentLoaded", function() {
                 closeNotificationPanel();
             }
         });
+
+        // Logout Functionality
+        if (logoutLink) {
+            logoutLink.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                localStorage.removeItem("user"); 
+                window.location.href = "/project/User/html/Home.html"; 
+            });
+        }
     }
-    
-    //Public Functions
-    // Recharge Now function for recommended plans
-    window.rechargeNow = function(amount, data, validity, ott) {
-        successAmount.textContent = "₹" + amount;
-        transactionId.textContent = "TXN" + Math.floor(Math.random() * 1000000000);
-        
-        setTimeout(() => {
-            rechargeSuccessModal.show();
-            
-            // Add notification
-            addNotification(
-                "Recharge Successful",
-                `Your recharge of ₹${amount} was successful. Enjoy your services!`
-            );
-            
-            // Update transaction history
-            addTransactionRecord(amount);
-        }, 300);
-    };
     
     //Initialize Application
     function initApp() {
         initializeSidebar();
         initEventListeners();
-        toggleScrollToTopButton(); // Check initial scroll position
+        toggleScrollToTopButton(); 
+        updateUserInfo();
     }
     
-    // Initialize the application
+    
     initApp();
 
 

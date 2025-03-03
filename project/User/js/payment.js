@@ -24,6 +24,26 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = "/project/User/html/plan.html";
     });
 
+    // document.addEventListener("DOMContentLoaded", function () {
+
+    //     // Retrieve the selected plan from localStorage
+    //     const selectedPlan = JSON.parse(localStorage.getItem("selectedPlan"));
+        
+    //     // Check if the plan details exist; if not, redirect to the plans page
+    //     if (!selectedPlan || !selectedPlan.phoneNumber || !selectedPlan.amount) {
+    //         alert("No plan selected or mobile number missing. Redirecting to plans page.");
+    //         window.location.href = "plan.html";
+    //         return;
+    //     }
+    
+    //     // Display plan details in the payment summary
+    //     document.getElementById("summaryMobile").innerText = `Mobile Number: ${selectedPlan.phoneNumber}`;
+    //     document.getElementById("summaryPlan").innerText = `Plan: ₹${selectedPlan.amount}`;
+    //     document.getElementById("summaryData").innerText = `Data: ${selectedPlan.data}`;
+    //     document.getElementById("summaryValidity").innerText = `Validity: ${selectedPlan.validity}`;
+    //     document.getElementById("summaryOtt").innerText = `OTT: ${selectedPlan.ott}`;
+    // });
+
     // Pay Now button event listener
     document.getElementById("payNowBtn").addEventListener("click", function () {
         // Determine selected payment method based on expanded accordion
@@ -32,9 +52,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const netBankingCollapse = document.querySelector("#collapseNetBanking");
         const upiCollapse = document.querySelector("#collapseUPI");
 
-        if (netBankingCollapse && netBankingCollapse.classList.contains("show")) {
+        if (netBankingCollapse.classList.contains("show")) {
             paymentMode = "Net Banking";
-        } else if (upiCollapse && upiCollapse.classList.contains("show")) {
+        } else if (upiCollapse.classList.contains("show")) {
             paymentMode = "UPI";
         }
 
@@ -76,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.querySelector(".card.p-3.shadow-sm").appendChild(errorDiv);
             }
             errorDiv.innerText = errorMessage;
-            alert("Ivalid");
+            
             return;
         }
         // Clear any previous error messages if validation succeeds
@@ -94,6 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const transactionId = "TXN" + Math.floor(Math.random() * 1000000000);
             localStorage.setItem("transactionId", transactionId);
             localStorage.setItem("paymentMode", paymentMode);
+            localStorage.removeItem("selectedPlan");
             // Redirect to success page
             window.location.href = "/project/User/html/success.html";
         }, 2000); // 2-second delay to simulate processing

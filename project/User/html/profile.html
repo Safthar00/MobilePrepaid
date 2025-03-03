@@ -116,24 +116,22 @@
                 <!-- Editable Fields -->
                 <div class="form-group">
                     <label for="userName">User Name</label>
-                    <input type="text" id="userName" class="form-control" value="John Doe">
+                    <input type="text" id="userName" class="form-control" value="Safi">
                     <div id="userNameError" class="error-text">Please enter your name</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="address">Address</label>
-                    <textarea id="address" class="form-control" rows="3">123 Main Street, Apt 4B
-New York, NY 10001
-United States</textarea>
+                    <textarea id="address" class="form-control" rows="3"></textarea>
                     <div id="addressError" class="error-text">Please enter your address</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="email">Email ID</label>
-                    <input type="email" id="email" class="form-control" value="john.doe@example.com">
+                    <input type="email" id="email" class="form-control" value="">
                     <div id="emailError" class="error-text">Please enter a valid email address</div>
                 </div>
-                
+
                 <!-- Non-Editable Fields -->
                 <div class="form-group">
                     <label for="activationDate">Activation Date</label>
@@ -194,18 +192,18 @@ United States</textarea>
             // Only proceed if valid
             if (isValid) {
                 // Create a profile object
-                const profileData = {
-                    userName: userName,
-                    address: address,
-                    email: email,
-                    // Include non-editable fields
-                    activationDate: document.getElementById('activationDate').value,
-                    activeStatus: document.getElementById('activeStatus').value
-                };
+                let user = JSON.parse(localStorage.getItem('user')) || {};
                 
-                // Save to local storage
-                localStorage.setItem('mobileProfileData', JSON.stringify(profileData));
-                
+                // Update user object with profile data
+                user.name = userName; // Changed from userName to name for consistency
+                user.address = address;
+                user.email = email;
+                user.activationDate = document.getElementById('activationDate').value;
+                user.activeStatus = document.getElementById('activeStatus').value;
+
+                // Save updated user object back to localStorage
+                localStorage.setItem('user', JSON.stringify(user));
+
                 // Show success notification
                 showNotification();
             }
@@ -213,24 +211,14 @@ United States</textarea>
         
         // Function to load profile data from local storage
         function loadProfileFromLocalStorage() {
-            const savedProfile = localStorage.getItem('mobileProfileData');
-            
-            if (savedProfile) {
-                const profileData = JSON.parse(savedProfile);
-                
-                // Update editable fields with saved values
-                document.getElementById('userName').value = profileData.userName || '';
-                document.getElementById('address').value = profileData.address || '';
-                document.getElementById('email').value = profileData.email || '';
-                
-                // Update non-editable fields (if needed)
-                if (profileData.activationDate) {
-                    document.getElementById('activationDate').value = profileData.activationDate;
-                }
-                
-                if (profileData.activeStatus) {
-                    document.getElementById('activeStatus').value = profileData.activeStatus;
-                }
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (user) {
+                document.getElementById('userName').value = user.name || 'Safi'; // Default to 'Safi' if not set
+                document.getElementById('address').value = user.address || '';
+                document.getElementById('email').value = user.email || '';
+                document.getElementById('activationDate').value = user.activationDate || 'January 15, 2025';
+                document.getElementById('activeStatus').value = user.activeStatus || 'active';
             }
         }
         

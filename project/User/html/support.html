@@ -83,45 +83,44 @@
         </div>
     </div>
 
-    <!-- Contact Support -->
+
     <div class="container mt-5">
         <h2>Contact Us</h2>
         <form id="supportForm">
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
                 <input type="text" class="form-control" id="name" placeholder="Enter name" required>
+                <span id="nameError" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+                <span id="emailError" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label for="subject" class="form-label">Subject</label>
                 <input type="text" class="form-control" id="subject" placeholder="Enter subject" required>
+                <span id="subjectError" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label for="message" class="form-label">Message</label>
                 <textarea class="form-control" id="message" rows="3" placeholder="Enter the message" required></textarea>
+                <span id="messageError" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
-
-
+    
     <!-- Toast Notification -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
-    <div id="successToast" class="toast" role="alert text-bg-success border-0" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-            <strong class="me-auto">TelecomX</strong>
-            <small>Just now</small>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-            Your message has been submitted successfully!
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">Form submitted successfully!</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
         </div>
     </div>
-</div>
-
+    
 
 <!--footer-->
 <footer class="footer bg-dark text-light py-4 mt-5">

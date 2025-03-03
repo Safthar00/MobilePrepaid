@@ -1,18 +1,24 @@
 document.addEventListener("DOMContentLoaded", function () {
     const authButton = document.getElementById("authButton");
-    let isLoggedIn = false; // Simulating login state
+    
+    function updateAuthButton() {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const isLoggedIn = user && user.token;
 
-    // Login/Logout functionality
-    authButton.addEventListener("click", function () {
-        if (!isLoggedIn) {
-            isLoggedIn = true;
-            authButton.textContent = "Logout";
-            window.location.href = "/project/User/html/otp.html";
+        if (isLoggedIn) {
+            authButton.textContent = "Profile";
+            authButton.onclick = function () {
+                window.location.href = "/project/User/html/dashboard.html";
+            };
         } else {
-            isLoggedIn = false;
             authButton.textContent = "Login";
+            authButton.onclick = function () {
+                window.location.href = "/project/User/html/otp.html";
+            };
         }
-    });
+    }
+    
+    updateAuthButton();
 
     // Quick Recharge functionality
     const rechargeNowBtn = document.getElementById("rechargeNowBtn");
@@ -21,12 +27,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     rechargeNowBtn.addEventListener("click", function () {
         const mobileNumber = mobileNumberInput.value.trim();
-        const mobilePattern = /^[6-9]\d{9}$/; 
+        const mobilePattern = /^[6-9]\d{9}$/; // Indian mobile number validation
 
         if (mobilePattern.test(mobileNumber)) {
-            localStorage.setItem("rechargeNumber", mobileNumber); // Store the mobile number
-            localStorage.setItem("fromQuickRecharge", "true"); // Set flag for Quick Recharge
-            window.location.href = "/project/User/html/plan.html"; // Redirect to Plan page
+            localStorage.setItem("rechargeNumber", mobileNumber); 
+            localStorage.setItem("fromQuickRecharge", "true"); 
+            window.location.href = "/project/User/html/plan.html"; 
         } else {
             errorMsg.style.display = "block"; // Show error message           
         }

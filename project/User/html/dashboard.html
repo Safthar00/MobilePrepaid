@@ -30,9 +30,9 @@
                             <i class="fas fa-user-circle"></i> Safi
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user"></i> Edit Profile</a></li>
+                            <li><a class="dropdown-item" href="/project/User/html/profile.html"><i class="fas fa-user"></i> Edit Profile</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/project/User/html/Home.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                            <li><a class="dropdown-item" href="/project/User/html/Home.html" id="logout-Link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>                        
                         </ul>
                     </li>
                 </ul>
@@ -50,7 +50,7 @@
         <a href="#" class="active"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
         <a href="#myPlans"><i class="fas fa-list-alt me-2"></i> My Plans</a>
         <a href="#transactions"><i class="fas fa-exchange-alt me-2"></i> Transactions</a>
-        <a href="/project/User/html/plan.html"><i class="fas fa-tag me-2"></i> Offers</a>
+        <a href="/project/User/html/plan.html" onclick="localStorage.setItem('fromPrepaidLink', 'true')"><i class="fas fa-tag me-2"></i> Offers</a>
         <a href="/project/User/html/support.html"><i class="fas fa-headset me-2"></i> Support</a>
     </div>
 
@@ -95,7 +95,7 @@
             <!-- Dashboard Header -->
             <div class="row mb-4">
                 <div class="col-md-8">
-                    <h2>Welcome back, Safi!</h2>
+                    <h2>Welcome back!!</h2>
                     <p class="text-muted">Here's an overview of your current plan and usage.</p>
                 </div>
                 <div class="col-md-4 text-md-end">
@@ -159,9 +159,6 @@
                                         <i class="fas fa-check-circle me-1"></i> Active
                                     </div>
                                     <p class="text-muted">56 days validity</p>
-                                    <a href="/project/User/html/plan.html" class="btn btn-primary">
-                                        <i class="fas fa-exchange-alt me-2"></i> Switch/Upgrade Plan
-                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -170,41 +167,6 @@
             </div>
 
             <!-- Quick Actions -->
-            <div class="row mb-4">
-                <div class="col-12 mb-3">
-                    <h4>Quick Actions</h4>
-                </div>
-                <div class="col-md-3 col-sm-6 mb-3">
-                    <div class="quick-action">
-                        <i class="fas fa-list-alt"></i>
-                        <h5>Browse Plans</h5>
-                        <a href="/project/User/html/plan.html" class="btn btn-sm btn-primary">View Plans</a>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6 mb-3">
-                    <div class="quick-action">
-                        <i class="fas fa-bolt"></i>
-                        <h5>Quick Recharge</h5>
-                        <a href="/project/User/html/Home.html" class="btn btn-sm btn-primary">Recharge Now</a>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6 mb-3">
-                    <div class="quick-action">
-                        <i class="fas fa-headset"></i>
-                        <h5>Get Support</h5>
-                        <a href="/project/User/html/support.html" class="btn btn-sm btn-primary">Contact Us</a>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6 mb-3">
-                    <div class="quick-action">
-                        <i class="fas fa-tag"></i>
-                        <h5>View Offers</h5>
-                        <a href="#recommendedPlans" class="btn btn-sm btn-primary">See Offers</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recommended Plans -->
             <div class="row mb-4" id="recommendedPlans">
                 <div class="col-12 mb-3">
                     <h4>Recommended Plans</h4>
@@ -217,7 +179,7 @@
                             <p class="card-text">Data: 2 GB/day</p>
                             <p class="card-text">Validity: 28 Days</p>
                             <p class="card-text"><strong>OTT: Hotstar</strong></p>
-                            <button class="btn" onclick="rechargeNow('199', '2GB/day', '28 days', 'Hotstar')" style="background-color:#2a28a7; color: white;">Recharge</button>
+                            <button class="btn" onclick="selectPlan('199', '2GB/day', '28 days', 'Hotstar')" style="background-color:#2a28a7; color: white;">Recharge</button>
                         </div>
                     </div>
                 </div>
@@ -229,7 +191,7 @@
                             <p class="card-text">Data: 1.5 GB/day</p>
                             <p class="card-text">Validity: 84 Days</p>
                             <p class="card-text"><strong>OTT: Amazon Prime</strong></p>
-                            <button class="btn" onclick="rechargeNow('599', '1.5GB/day', '84 days', 'Amazon Prime')" style="background-color:#2a28a7; color: white;">Recharge</button>
+                            <button class="btn" onclick="selectPlan('599', '1.5GB/day', '84 days', 'Amazon Prime')" style="background-color:#2a28a7; color: white;">Recharge</button>
                         </div>
                     </div>
                 </div>
@@ -241,7 +203,7 @@
                             <p class="card-text">Data: 2.5 GB/day</p>
                             <p class="card-text">Validity: 365 Days</p>
                             <p class="card-text"><strong>OTT: Sony Live</strong></p>
-                            <button class="btn" onclick="rechargeNow('799', '2.5GB/day', '365 days', 'Sony Live')" style="background-color:#2a28a7; color: white;">Recharge</button>
+                            <button class="btn" onclick="selectPlan('799', '2.5GB/day', '365 days', 'Sony Live')" style="background-color:#2a28a7; color: white;">Recharge</button>
                         </div>
                     </div>
                 </div>

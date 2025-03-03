@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TelecomX Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/project/Admin/css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h3>TelecomX Admin</h3>
+            </div>
+            <ul class="list-unstyled components">
+                <li>
+                    <a href="#" class="nav-link active" data-section="analytics">
+                        <i class="fas fa-chart-line me-2"></i> Analytics
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-section="expiring-plans">
+                        <i class="fas fa-clock me-2"></i> Expiring Plans
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-section="user-management">
+                        <i class="fas fa-users me-2"></i> User Management
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-section="recharge-plans">
+                        <i class="fas fa-list me-2"></i> Recharge Plans
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-section="transactions">
+                        <i class="fas fa-money-bill-wave me-2"></i> Transactions
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <button id="logoutBtn" class="btn btn-danger w-100">
+                    <i class="fas fa-sign-out-alt me-2"></i> Logout
+                </button>
+            </div>
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <span class="navbar-brand ms-3">TelecomX Admin Dashboard</span>
+                    <div class="ms-auto d-flex align-items-center">
+                        <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Admin Profile">
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid content-area">
+                <!-- Analytics Section -->
+                <section id="analytics" class="section-content">
+                    <div class="row">
+                        <div class="col-md-4 col-lg-2">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Subscribers</h5>
+                                    <p id="totalSubscribers" class="card-text"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-2">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 class="card-title">Active Plans</h5>
+                                    <p id="activePlans" class="card-text"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-2">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 class="card-title">Revenue</h5>
+                                    <p id="revenue" class="card-text"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-2">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 class="card-title">Inactive Users</h5>
+                                    <p id="inactiveUsers" class="card-text"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-2">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 class="card-title">Expiring Plans</h5>
+                                    <p id="expiringPlans" class="card-text"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">Expiring Plans</div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover" id="analytics-expiring-plans-table">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Customer Name</th>
+                                                    <th>Phone Number</th>
+                                                    <th>Plan Name</th>
+                                                    <th>Expiry Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">Subscribers Growth</div>
+                                <div class="card-body">
+                                    <canvas id="subscribersGrowthChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">Payment Method</div>
+                                <div class="card-body">
+                                    <canvas id="paymentMethodChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">Revenue Trend</div>
+                                <div class="card-body">
+                                    <canvas id="revenueTrendChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">Popular Plans</div>
+                                <div class="card-body">
+                                    <canvas id="popularPlansChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Expiring Plans Section -->
+                <section id="expiring-plans" class="section-content d-none">
+                    <div class="card">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Plans Expiring Soon</h5>
+                            <div class="input-group input-group-sm w-auto">
+                                <input type="text" id="expiring-plans-search" class="form-control" placeholder="Search...">
+                                <button class="btn btn-outline-secondary" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="expiring-plans-table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Customer Name</th>
+                                            <th>Phone Number</th>
+                                            <th>Plan Name</th>
+                                            <th>Expiry Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- User Management Section -->
+                <section id="user-management" class="section-content d-none">
+                    <div class="card">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">User Management</h5>
+                            <div class="input-group input-group-sm w-auto">
+                                <input type="text" id="user-search" class="form-control" placeholder="Search users...">
+                                <button class="btn btn-outline-secondary" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="users-table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Phone Number</th>
+                                            <th>Email</th>
+                                            <th>Registration Date</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Recharge Plans Section -->
+                <section id="recharge-plans" class="section-content d-none">
+                    <div class="card">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Recharge Plans</h5>
+                            <div class="d-flex">
+                                <div class="input-group input-group-sm me-2">
+                                    <input type="text" id="plans-search" class="form-control" placeholder="Search plans...">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                                <button id="add-plan-btn" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-plus me-1"></i> Add Plan
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="plans-table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Plan Name</th>
+                                            <th>Price (₹)</th>
+                                            <th>Data</th>
+                                            <th>Validity</th>
+                                            <th>Benefits</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Transactions Section -->
+                <section id="transactions" class="section-content d-none">
+                    <div class="card">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Transaction History</h5>
+                            <div class="d-flex">
+                                <div class="input-group input-group-sm me-2">
+                                    <input type="text" id="transactions-search" class="form-control" placeholder="Search transactions...">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                                <button id="downloadTransactionsBtn" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-download"></i> Download PDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="transactions-table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Transaction ID</th>
+                                            <th>Customer Name</th>
+                                            <th>Phone Number</th>
+                                            <th>Plan</th>
+                                            <th>Amount (₹)</th>
+                                            <th>Date</th>
+                                            <th>Payment Mode</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recharge History Modal -->
+    <div class="modal fade" id="rechargeHistoryModal" tabindex="-1" aria-labelledby="rechargeHistoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rechargeHistoryModalLabel">Recharge History for <span id="historyUserName"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="rechargeHistoryTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Plan</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice Modal -->
+    <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="invoiceModalLabel">Invoice Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Customer Name:</strong> <span id="invoiceCustomerName"></span></p>
+                    <p><strong>Phone Number:</strong> <span id="invoicePhone"></span></p>
+                    <p><strong>Plan:</strong> <span id="invoicePlan"></span></p>
+                    <p><strong>Amount:</strong> <span id="invoiceAmount"></span></p>
+                    <p><strong>Date:</strong> <span id="invoiceDate"></span></p>
+                    <p><strong>Payment Mode:</strong> <span id="invoicePaymentMode"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="downloadInvoiceBtn" class="btn btn-primary">Download PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Plan Form Modal -->
+    <div class="modal fade" id="planFormModal" tabindex="-1" aria-labelledby="planFormModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="planFormModalLabel">Add/Edit Plan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="planForm">
+                        <input type="hidden" id="planId">
+                        <div class="mb-3">
+                            <label for="planName" class="form-label">Plan Name</label>
+                            <input type="text" class="form-control" id="planName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="planPrice" class="form-label">Price (₹)</label>
+                            <input type="number" class="form-control" id="planPrice" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="planData" class="form-label">Data</label>
+                            <input type="text" class="form-control" id="planData" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="planValidity" class="form-label">Validity (days)</label>
+                            <input type="number" class="form-control" id="planValidity" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="planBenefits" class="form-label">Benefits</label>
+                            <textarea class="form-control" id="planBenefits" rows="3" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="savePlanBtn" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/project/Admin/js/script.js"></script>
+</body>
+</html>
