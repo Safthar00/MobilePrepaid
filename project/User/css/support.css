@@ -1,69 +1,121 @@
+:root {
+    --primary-color: #002349;
+    --secondary-color: #8686AC;
+    --background-light: #f4f6f7;
+    --text-dark: #2c3e50;
+    --accent-color: #27c067;
+}
+
 /* General Enhancements */
 body {
-    background-color: #ffffff;
+    background-color: var(--background-light);
 }
 
-/* Navbar */
 .navbar {
-    /* background-color: #2c3e50; */
-    background: linear-gradient(to right, #2C3E50, #2c5e9e) !important;
+    background-color: var(--primary-color);
+    padding: 0.5rem 1rem;
+}
 
-}
 .navbar-brand {
-    font-weight: bold;
+    color: white;
     font-size: 1.5rem;
-    color: #ECF0F1 !important;
-}
-.nav-link {
-    color: #ECF0F1 !important;
-    font-size: 1.1rem;
-    transition: color 0.3s ease-in-out;
-}
-.nav-link:hover {
-    color: #000000 !important;
-}
-#authButton {
-    background-color: #F39C12;
-    color: #ffffff;
     font-weight: bold;
+    text-decoration: none;
+}
+
+.navbar-nav {
+    align-items: center;
+}
+
+.nav-link {
+    color: white !important;
+    margin: 0 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--secondary-color) !important;
+}
+
+.dropdown-menu {
+    background-color: var(--primary-color);
     border: none;
 }
+
+.dropdown-item {
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+#authButton {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    transition: background-color 0.3s ease;
+}
+
+#authButton:hover {
+    background-color: #2980b9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .navbar-nav {
+        align-items: stretch;
+    }
+
+    .nav-link {
+        text-align: center;
+    }
+
+    #authButton {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}
+
+/* Progress Bars */
+.progress-bar {
+    background-color: var(--secondary-color) !important;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+    background-color: white;
+    border-color: var(--background-light);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: color-mix(in srgb, var(--accent-color) 80%, black);
+}
+
 /* FAQ Accordion */
 .accordion-button {
-    background-color: #ffffff !important;
-    color: #000000 !important;
+    background-color: white !important;
+    color: var(--text-dark) !important;
     border: none !important;
     box-shadow: none !important;
 }
 
 .accordion-button:not(.collapsed) {
-    background-color: #2c3e50 !important;
-    color: #fff !important;
+    background-color: var(--primary-color) !important;
+    color: white !important;
 }
 
 .accordion-body {
-    background-color: #f8f9fa;
+    background-color: var(--background-light);
 }
-
-/* Remove blue border on accordion click */
-.accordion-button:focus {
-    box-shadow: none !important;
-    border-color: transparent !important;
-}
-
-
-/* Toast Styling */
-/* Toast Notification */
-.toast {
-    font-size: 1rem;
-    opacity: 1; /* Ensure the toast is visible when shown */
-    display: none; /* Hide by default */
-}
-
-.toast.show {
-    display: block; /* Show when the 'show' class is added */
-}
-
 
 /* Form */
 form {
@@ -73,24 +125,24 @@ form {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Buttons */
-.btn-primary {
-    background-color: #2a28a7;
-    border: none;
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
-}
-
-
 /* Toast Notification */
 .toast {
     font-size: 1rem;
-    opacity: 1; /* Ensure the toast is visible when shown */
+    opacity: 1;
 }
 
 .toast.show {
-    display: block; /* Show when the 'show' class is added */
+    display: block;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--primary-color) !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
 }

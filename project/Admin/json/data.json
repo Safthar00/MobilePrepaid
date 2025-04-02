@@ -1,9 +1,9 @@
 {
     "expiringPlans": [
-      { "id": 1, "name": "Abdul", "phone": "9876543210", "plan": "Monthly Data Boost", "expiry": "2025-03-15" },
+      { "id": 1, "name": "Abdul", "phone": "9876543210", "plan": "Monthly Data Boost", "expiry": "2025-03-03" },
       { "id": 2, "name": "Cabby", "phone": "8765432109", "plan": "Premium Unlimited", "expiry": "2025-03-16" },
       { "id": 3, "name": "Prasath", "phone": "7654321098", "plan": "Basic Data Pack", "expiry": "2025-03-17" },
-      { "id": 4, "name": "Kishore", "phone": "6543210987", "plan": "Weekend Special", "expiry": "2025-03-18" },
+      { "id": 4, "name": "Kishore", "phone": "6543210987", "plan": "Weekend Special", "expiry": "2025-03-04" },
       { "id": 5, "name": "Arjun", "phone": "5432109876", "plan": "Daily Data", "expiry": "2025-03-16" }
     ],
     "users": [

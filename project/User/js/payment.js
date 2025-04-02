@@ -1,122 +1,97 @@
+const BASE_URL = 'http://localhost:8084';
+
 document.addEventListener("DOMContentLoaded", function () {
-    // Retrieve plan details from localStorage
-    const mobileNumber = localStorage.getItem("mobileNumber") || "Not Available";
-    const planPrice = localStorage.getItem("planPrice") || "N/A";
-    const planData = localStorage.getItem("planData") || "N/A";
-    const planValidity = localStorage.getItem("planValidity") || "N/A";
-    const planOtt = localStorage.getItem("planOtt") || "None";
-    // Check if plan details exist; if not, redirect to plans page
-    if (!planPrice || !mobileNumber) {
+    // Check if Razorpay is loaded
+    if (typeof Razorpay === 'undefined') {
+        console.error('Razorpay not available');
+        const payBtn = document.getElementById("payNowBtn");
+        payBtn.disabled = true;
+        payBtn.textContent = 'Payment Service Unavailable';
+        payBtn.classList.add('btn-danger');
+        return;
+    }
+
+    // Retrieve plan details
+    const selectedPlan = JSON.parse(localStorage.getItem("selectedPlan"));
+    const mobileNumber = localStorage.getItem("rechargeMobile") || "Not Available";
+    const user = JSON.parse(localStorage.getItem('user')) || {}; // Make user optional
+    
+    // Validate data
+    if (!selectedPlan || !mobileNumber) {
         alert("No plan selected or mobile number missing. Redirecting to plans page.");
         window.location.href = "/project/User/html/plan.html";
         return;
     }
 
-    // Display plan details in the summary
+    // Display plan details
     document.getElementById("summaryMobile").innerText = `Mobile Number: ${mobileNumber}`;
-    document.getElementById("summaryPlan").innerText = `Plan: ₹${planPrice}`;
-    document.getElementById("summaryData").innerText = `Data: ${planData} GB`;
-    document.getElementById("summaryValidity").innerText = `Validity: ${planValidity} days`;
-    document.getElementById("summaryOtt").innerText = `OTT: ${planOtt}`;
+    document.getElementById("summaryPlan").innerText = `Plan: ₹${selectedPlan.price}`;
+    document.getElementById("summaryData").innerText = `Data: ${selectedPlan.data}`;
+    document.getElementById("summaryValidity").innerText = `Validity: ${selectedPlan.validity}`;
+    document.getElementById("summaryOtt").innerText = `Benefits: ${selectedPlan.benefits || "None"}`;
 
-    // Back to Plans button event listener
+    // Back to Plans button
     document.getElementById("backToPlansBtn").addEventListener("click", function() {
         window.location.href = "/project/User/html/plan.html";
     });
 
-    // document.addEventListener("DOMContentLoaded", function () {
+    // Pay Now button - Direct Razorpay integration
+    document.getElementById("payNowBtn").addEventListener("click", async function () {
+        // Store all required data in localStorage for success page
+        localStorage.setItem("mobileNumber", mobileNumber);
+        localStorage.setItem("planPrice", selectedPlan.price);
+        localStorage.setItem("planData", selectedPlan.data);
+        localStorage.setItem("planValidity", selectedPlan.validity);
+        localStorage.setItem("planOtt", selectedPlan.benefits || "None");
+        localStorage.setItem("paymentMode", "Razorpay");
 
-    //     // Retrieve the selected plan from localStorage
-    //     const selectedPlan = JSON.parse(localStorage.getItem("selectedPlan"));
-        
-    //     // Check if the plan details exist; if not, redirect to the plans page
-    //     if (!selectedPlan || !selectedPlan.phoneNumber || !selectedPlan.amount) {
-    //         alert("No plan selected or mobile number missing. Redirecting to plans page.");
-    //         window.location.href = "plan.html";
-    //         return;
-    //     }
-    
-    //     // Display plan details in the payment summary
-    //     document.getElementById("summaryMobile").innerText = `Mobile Number: ${selectedPlan.phoneNumber}`;
-    //     document.getElementById("summaryPlan").innerText = `Plan: ₹${selectedPlan.amount}`;
-    //     document.getElementById("summaryData").innerText = `Data: ${selectedPlan.data}`;
-    //     document.getElementById("summaryValidity").innerText = `Validity: ${selectedPlan.validity}`;
-    //     document.getElementById("summaryOtt").innerText = `OTT: ${selectedPlan.ott}`;
-    // });
+        const payBtn = this;
+        payBtn.disabled = true;
+        payBtn.textContent = 'Processing...';
 
-    // Pay Now button event listener
-    document.getElementById("payNowBtn").addEventListener("click", function () {
-        // Determine selected payment method based on expanded accordion
-        let paymentMode = "Credit/Debit Card"; // Default
-        const cardCollapse = document.querySelector("#collapseCard");
-        const netBankingCollapse = document.querySelector("#collapseNetBanking");
-        const upiCollapse = document.querySelector("#collapseUPI");
+        try {
+            // Razorpay options
+            const options = {
+                key: "rzp_test_1DP5mmOlF5G5ag", // Your Razorpay test key
+                amount: selectedPlan.price * 100, // Amount in paise
+                currency: "INR",
+                name: "TelecomX Recharge",
+                description: `Recharge for ${mobileNumber}`,
+                image: "/project/User/assets/logo.png", // Local logo path
+                handler: function (response) {
+                    // On successful payment
+                    localStorage.setItem("transactionId", response.razorpay_payment_id);
+                    window.location.href = "/project/User/html/success.html";
+                },
+                prefill: {
+                    name: user.name || "Customer",
+                    email: user.email || "customer@example.com",
+                    contact: mobileNumber
+                },
+                theme: {
+                    color: "#002349"
+                },
+                modal: {
+                    ondismiss: function() {
+                        payBtn.disabled = false;
+                        payBtn.textContent = 'Pay Now';
+                    }
+                }
+            };
 
-        if (netBankingCollapse.classList.contains("show")) {
-            paymentMode = "Net Banking";
-        } else if (upiCollapse.classList.contains("show")) {
-            paymentMode = "UPI";
+            const rzp = new Razorpay(options);
+            rzp.on('payment.failed', function(response) {
+                console.error('Payment failed:', response.error);
+                alert(`Payment failed: ${response.error.description}`);
+                payBtn.disabled = false;
+                payBtn.textContent = 'Try Again';
+            });
+            rzp.open();
+        } catch (error) {
+            console.error('Payment initialization error:', error);
+            alert('Payment initialization failed: ' + error.message);
+            payBtn.disabled = false;
+            payBtn.textContent = 'Pay Now';
         }
-
-        // Validate payment inputs
-        let isValid = true;
-        let errorMessage = "";
-
-        if (paymentMode === "Credit/Debit Card") {
-            const cardNumber = document.getElementById("cardNumber").value.trim();
-            const cvv = document.getElementById("cvv").value.trim();
-            if (!cardNumber || cardNumber.length !== 16 || isNaN(cardNumber)) {
-                isValid = false;
-                errorMessage = "Please enter a valid 16-digit card number.";
-            } else if (!cvv || cvv.length !== 3 || isNaN(cvv)) {
-                isValid = false;
-                errorMessage = "Please enter a valid 3-digit CVV.";
-            }
-        } else if (paymentMode === "Net Banking") {
-            const bankSelect = document.getElementById("bankSelect");
-            if (!bankSelect) {
-                isValid = false;
-                errorMessage = "Please select a bank.";
-            }
-        } else if (paymentMode === "UPI") {
-            const upiId = document.getElementById("upiId").value.trim();
-            if (!upiId || !upiId.includes("@")) {
-                isValid = false;
-                errorMessage = "Please enter a valid UPI ID (e.g., user@upi).";
-            }
-        }
-
-        // Handle validation failure
-        if (!isValid) {
-            let errorDiv = document.getElementById("paymentError");
-            if (!errorDiv) {
-                errorDiv = document.createElement("div");
-                errorDiv.id = "paymentError";
-                errorDiv.className = "text-danger mt-2";
-                document.querySelector(".card.p-3.shadow-sm").appendChild(errorDiv);
-            }
-            errorDiv.innerText = errorMessage;
-            
-            return;
-        }
-        // Clear any previous error messages if validation succeeds
-        const errorDiv = document.getElementById("paymentError");
-        if (errorDiv) {
-            errorDiv.remove();
-        }
-
-        // Simulate payment processing
-        document.getElementById("payNowBtn").innerText = "Processing...";
-        document.getElementById("payNowBtn").disabled = true;
-
-        setTimeout(() => {
-            // Generate a mock transaction ID
-            const transactionId = "TXN" + Math.floor(Math.random() * 1000000000);
-            localStorage.setItem("transactionId", transactionId);
-            localStorage.setItem("paymentMode", paymentMode);
-            localStorage.removeItem("selectedPlan");
-            // Redirect to success page
-            window.location.href = "/project/User/html/success.html";
-        }, 2000); // 2-second delay to simulate processing
     });
 });

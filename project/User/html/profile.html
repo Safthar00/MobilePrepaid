@@ -154,92 +154,97 @@
     </div>
 
     <script>
-        // Function to load profile data from local storage on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            loadProfileFromLocalStorage();
+        const BASE_URL = 'http://localhost:8084';
+
+// Utility function to show/hide elements
+const toggleElement = (id, display) => {
+    document.getElementById(id).style.display = display;
+};
+
+// Load profile data
+async function loadProfileFromBackend() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user || !user.token) {
+        window.location.href = '/project/User/html/otp.html';
+        return;
+    }
+
+    try {
+        // Fetch user profile (hypothetical endpoint)
+        const response = await fetch(`${BASE_URL}/users/profile`, {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${user.token}` }
         });
-        
-        // Function to save profile data to local storage
-        function saveProfile() {
-            // Get values from editable fields
-            const userName = document.getElementById('userName').value;
-            const address = document.getElementById('address').value;
-            const email = document.getElementById('email').value;
-            
-            // Reset error messages
-            document.getElementById('userNameError').style.display = 'none';
-            document.getElementById('addressError').style.display = 'none';
-            document.getElementById('emailError').style.display = 'none';
-            
-            // Validate inputs without alerts
-            let isValid = true;
-            
-            if (!userName) {
-                document.getElementById('userNameError').style.display = 'block';
-                isValid = false;
-            }
-            
-            if (!address) {
-                document.getElementById('addressError').style.display = 'block';
-                isValid = false;
-            }
-            
-            if (!email || !validateEmail(email)) {
-                document.getElementById('emailError').style.display = 'block';
-                isValid = false;
-            }
-            
-            // Only proceed if valid
-            if (isValid) {
-                // Create a profile object
-                let user = JSON.parse(localStorage.getItem('user')) || {};
-                
-                // Update user object with profile data
-                user.name = userName; // Changed from userName to name for consistency
-                user.address = address;
-                user.email = email;
-                user.activationDate = document.getElementById('activationDate').value;
-                user.activeStatus = document.getElementById('activeStatus').value;
 
-                // Save updated user object back to localStorage
-                localStorage.setItem('user', JSON.stringify(user));
+        if (response.ok) {
+            const profile = await response.json();
+            document.getElementById('userName').value = `${profile.firstName} ${profile.lastName}` || 'Safi';
+            document.getElementById('address').value = profile.address || '';
+            document.getElementById('email').value = profile.email || '';
+            document.getElementById('activationDate').value = profile.startDate || 'January 15, 2025';
+            document.getElementById('activeStatus').value = profile.active ? 'active' : 'inactive';
+            document.querySelector('.status-badge').textContent = profile.active ? 'Active' : 'Inactive';
+        } else {
+            console.error('Failed to load profile:', await response.text());
+        }
+    } catch (error) {
+        console.error('Failed to load profile:', error);
+    }
+}
 
-                // Show success notification
-                showNotification();
-            }
-        }
-        
-        // Function to load profile data from local storage
-        function loadProfileFromLocalStorage() {
-            const user = JSON.parse(localStorage.getItem('user'));
+// Save profile changes
+async function saveProfile() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user || !user.token) return;
 
-            if (user) {
-                document.getElementById('userName').value = user.name || 'Safi'; // Default to 'Safi' if not set
-                document.getElementById('address').value = user.address || '';
-                document.getElementById('email').value = user.email || '';
-                document.getElementById('activationDate').value = user.activationDate || 'January 15, 2025';
-                document.getElementById('activeStatus').value = user.activeStatus || 'active';
-            }
-        }
-        
-        // Function to validate email format
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
-        
-        // Function to show the notification and hide it after a delay
-        function showNotification() {
-            const notification = document.getElementById('notification');
-            notification.style.display = 'block';
-            
-            // Hide notification after 3 seconds
-            setTimeout(function() {
-                notification.style.display = 'none';
-                window.location.href='/project/User/html/dashboard.html';
+    const userName = document.getElementById('userName').value;
+    const address = document.getElementById('address').value;
+    const email = document.getElementById('email').value;
+
+    // Validation
+    toggleElement('userNameError', userName ? 'none' : 'block');
+    toggleElement('addressError', address ? 'none' : 'block');
+    toggleElement('emailError', email && validateEmail(email) ? 'none' : 'block');
+
+    if (!userName || !address || !email || !validateEmail(email)) return;
+
+    try {
+        // Update user profile (hypothetical endpoint)
+        const response = await fetch(`${BASE_URL}/users/profile`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
+            },
+            body: JSON.stringify({
+                firstName: userName.split(' ')[0],
+                lastName: userName.split(' ')[1] || '',
+                address,
+                email
+            })
+        });
+
+        if (response.ok) {
+            toggleElement('notification', 'block');
+            setTimeout(() => {
+                toggleElement('notification', 'none');
+                window.location.href = '/project/User/html/dashboard.html';
             }, 3000);
-
+        } else {
+            console.error('Failed to update profile:', await response.text());
         }
+    } catch (error) {
+        console.error('Error updating profile:', error);
+    }
+}
+
+// Email validation
+function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// Load profile on page load
+document.addEventListener('DOMContentLoaded', loadProfileFromBackend);
     </script>
 </body>
 </html>

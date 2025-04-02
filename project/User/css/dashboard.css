@@ -1,126 +1,223 @@
+:root {
+    --primary-color: #002349;
+    --secondary-color: #27c067;
+    --background-light: #f4f6f7;
+    --text-dark: #2c3e50;
+    --accent-color: #3498db;
+    --progress-color:#8686AC;
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background-color: #f4f4f4;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-dark);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
 
 .navbar {
-    background: linear-gradient(to right, #2C3E50, #2c5e9e) !important;
-    
+    background-color: var(--primary-color);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
-.nav-link {
-    color: #ECF0F1 !important;
-    font-size: 1.1rem;
-    transition: color 0.3s ease-in-out;
+.navbar-brand, .nav-link {
+    color: white !important;
 }
 
 .nav-link:hover {
-    color: #000000 !important;
+    color: var(--accent-color) !important;
 }
 
 .dropdown-menu {
-    background-color: #34495E;
-    border: none;
+    background-color: var(--primary-color);
 }
 
 .dropdown-item {
-    color: #ECF0F1 !important;
+    color: white !important;
 }
 
 .dropdown-item:hover {
-    background-color: #4985de !important;
-    color: #ffffff !important;
+    background-color: var(--accent-color) !important;
 }
 
-/* Sidebar */
 .sidebar {
-    background-color: #2C3E50;
+    background-color: var(--primary-color);
     color: white;
-    min-height: 100vh;
-    padding: 20px;
+    height: calc(100vh - 56px);
+    padding: 15px;
     position: fixed;
     top: 56px;
     left: 0;
     width: 250px;
     z-index: 100;
-    transition: all 0.3s;
+    transition: transform 0.3s ease;
     overflow-y: auto;
+    transform: translateX(0); /* Default state for desktop */
 }
 
 .sidebar .user-info {
     padding: 15px 0;
     text-align: center;
     border-bottom: 1px solid rgba(255,255,255,0.1);
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .sidebar .user-info img {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
-    margin-bottom: 10px;
-    border: 3px solid #F39C12;
+    margin-bottom: 8px;
+    border: 2px solid var(--accent-color);
+}
+
+.sidebar .user-info input:disabled {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
+    padding: 5px;
+    width: 80%;
+    margin: 0 auto;
+    font-size: 0.85rem;
 }
 
 .sidebar a {
     color: white;
     text-decoration: none;
     display: block;
-    padding: 10px;
-    margin-bottom: 10px;
-    background: #34495E;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    background: rgba(255,255,255,0.1);
     border-radius: 5px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
 }
 
 .sidebar a:hover, .sidebar a.active {
-    background: #F39C12;
+    background: var(--accent-color);
     transform: translateX(5px);
 }
 
-/* Main Content */
 .main-content {
-    margin-top:50px;
-    margin-left: 250px;
-    padding: 20px;
-    transition: margin-left 0.3s;
-    display: flex;
+    margin-top: 56px;
+    margin-left: 250px; /* Default for desktop */
+    padding: 15px;
+    transition: margin-left 0.3s ease;
 }
 
-/* Cards */
-.card {
-    margin-bottom: 20px;
-    transition: transform 0.3s, box-shadow 0.3s;
-    border-radius: 10px;
-    overflow: hidden;
-    border: none;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+.dashboard-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 15px;
+    transition: transform 0.3s ease;
+    width: 100%;
 }
 
-.card-header {
-    background: linear-gradient(to right, #2C3E50, #2c5e9e);
+.dashboard-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--accent-color);
     color: white;
-    font-weight: bold;
-    border-bottom: none;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.75rem;
 }
 
-/* Progress bars */
 .progress {
-    height: 10px;
-    margin-bottom: 10px;
+    height: 8px;
     background-color: #e9ecef;
 }
 
 .progress-bar {
-    background-color: #2a28a7;
+    background-color: var(--progress-color);
 }
 
-/* Notification panel */
+.current-plan-details {
+    width: 100%;
+    max-width: none;
+}
+
+.transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.transaction-table th {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 8px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.transaction-table td {
+    padding: 8px;
+    border-bottom: 1px solid #e0e0e0;
+    white-space: nowrap;
+}
+
+.transaction-table .status-success {
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+
+.transaction-table .status-fail {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.transaction-history-card {
+    width: 150%;
+    grid-column: span 2;
+}
+
+#scrollToTopBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: none;
+    z-index: 99;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    transition: all 0.3s;
+}
+
+#scrollToTopBtn:hover {
+    background-color: #001a36;
+    transform: translateY(-3px);
+}
+
+/* Notification Panel */
 .notification-panel {
     position: fixed;
     top: 56px;
@@ -146,8 +243,8 @@ body {
 }
 
 .notification-item.unread {
-    background-color: rgba(74, 144, 226, 0.1);
-    border-left: 4px solid #2a28a7;
+    background-color: rgba(52, 152, 219, 0.1);
+    border-left: 4px solid var(--accent-color);
 }
 
 .notification-title {
@@ -160,115 +257,127 @@ body {
     color: #777;
 }
 
-/* Quick actions */
-.quick-action {
-    text-align: center;
-    padding: 15px;
-    border-radius: 10px;
-    background-color: white;
-    transition: all 0.3s;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
+/* Responsive Breakpoints - CSS Only */
+@media (max-width: 480px) {
+    .navbar-brand {
+        font-size: 1rem;
+    }
 
-.quick-action:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-}
-
-.quick-action i {
-    font-size: 2rem;
-    color: #2a28a7;
-    margin-bottom: 10px;
-}
-
-/* Buttons */
-.btn-primary {
-    background-color: #2a28a7;
-    border-color: #2a28a7;
-}
-
-.btn-primary:hover {
-    background-color: #1e1c7e;
-    border-color: #1e1c7e;
-}
-
-.btn-warning {
-    background-color: #F39C12;
-    border-color: #F39C12;
-    color: white;
-}
-
-.btn-warning:hover {
-    background-color: #e08e0b;
-    border-color: #e08e0b;
-    color: white;
-}
-
-/* Notification badge */
-.notification-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: #F39C12;
-    color: white;
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    font-size: 0.7rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Scroll to top button */
-#scrollToTopBtn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #2a28a7;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    display: none;
-    z-index: 99;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    transition: all 0.3s;
-}
-
-#scrollToTopBtn:hover {
-    background-color: #1e1c7e;
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-/* Mobile styles */
-@media (max-width: 991.98px) {
     .sidebar {
         transform: translateX(-100%);
-        width: 100%;
+        width: 80%;
         max-width: 250px;
     }
-    
+
     .sidebar.show {
         transform: translateX(0);
     }
-    
+
+    .main-content {
+        margin-left: 0;
+        padding: 10px;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar .user-info img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .transaction-table {
+        font-size: 0.75rem;
+    }
+
+    .transaction-table th, .transaction-table td {
+        padding: 5px;
+    }
+
+    .notification-panel {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 767.98px) {
+    .sidebar {
+        transform: translateX(-100%);
+        width: 70%;
+        max-width: 280px;
+    }
+
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 12px;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .transaction-history-card {
+        grid-column: span 1;
+    }
+
+    .notification-panel {
+        width: 80%;
+        max-width: 280px;
+    }
+}
+
+@media (min-width: 767.99px) and (max-width: 991.98px) {
+    .sidebar {
+        transform: translateX(-100%);
+        width: 60%;
+        max-width: 250px;
+    }
+
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
     .main-content {
         margin-left: 0;
     }
-    
+
+    .dashboard-cards {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
     .notification-panel {
-        width: 100%;
+        width: 50%;
         max-width: 300px;
     }
 }
 
-@media (max-width: 767.98px) {
-    .quick-action {
-        margin-bottom: 15px;
+@media (min-width: 991.99px) {
+    .sidebar {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 250px;
+    }
+
+    .navbar-toggler {
+        display: none;
+    }
+}
+
+@media print {
+    .navbar, .sidebar, #scrollToTopBtn, .notification-panel {
+        display: none;
+    }
+    .main-content {
+        margin-left: 0;
+    }
+    .dashboard-cards {
+        grid-template-columns: repeat(2, 1fr);
     }
 }

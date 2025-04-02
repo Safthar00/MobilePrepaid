@@ -6,13 +6,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (isLoggedIn) {
             authButton.textContent = "Profile";
-            authButton.className = "btn btn-primary"; // Optional: Style change
+            authButton.className = "btn btn-primary"; 
             authButton.onclick = function () {
                 window.location.href = "/project/User/html/dashboard.html";
             };
         } else {
             authButton.textContent = "Login";
-            authButton.className = "btn btn-outline-light"; // Match initial HTML class
+            authButton.className = "btn btn-outline-light"; 
             authButton.onclick = function () {
                 window.location.href = "/project/User/html/otp.html";
             };

@@ -1,165 +1,177 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const authButton = document.getElementById("authButton");
-    
-    function updateAuthButton() {
-        const user = JSON.parse(localStorage.getItem("user"));
-        const isLoggedIn = user && user.token;
+const BASE_URL = 'http://localhost:8084';
 
-        if (isLoggedIn) {
-            authButton.textContent = "Profile";
-            authButton.onclick = function () {
-                window.location.href = "/project/User/html/dashboard.html";
-            };
-        } else {
-            authButton.textContent = "Login";
-            authButton.onclick = function () {
-                window.location.href = "/project/User/html/otp.html";
-            };
-        }
+// Check if user is logged in and update auth button, plus set up event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const authButton = document.getElementById('authButton');
+    if (user) {
+        authButton.textContent = 'Profile';
+        authButton.onclick = () => window.location.href = '/project/User/html/dashboard.html';
+    } else {
+        authButton.textContent = 'Login';
+        authButton.onclick = () => window.location.href = '/project/User/html/otp.html';
     }
-    
-    updateAuthButton();
 
-    // Quick Recharge functionality
-    const rechargeNowBtn = document.getElementById("rechargeNowBtn");
-    const mobileNumberInput = document.getElementById("mobileNumber");
-    const errorMsg = document.getElementById("error-msg");
+    // Load popular plans
+    loadPopularPlans();
 
-    rechargeNowBtn.addEventListener("click", function () {
-        const mobileNumber = mobileNumberInput.value.trim();
-        const mobilePattern = /^[6-9]\d{9}$/; // Indian mobile number validation
+    // Handle quick recharge
+    const rechargeNowBtn = document.getElementById('rechargeNowBtn');
+    if (rechargeNowBtn) {
+        rechargeNowBtn.addEventListener('click', () => {
+            const mobileNumber = document.getElementById('mobileNumber').value;
+            const errorMsg = document.getElementById('error-msg');
 
-        if (mobilePattern.test(mobileNumber)) {
-            localStorage.setItem("rechargeNumber", mobileNumber); 
-            localStorage.setItem("fromQuickRecharge", "true"); 
-            window.location.href = "/project/User/html/plan.html"; 
-        } else {
-            errorMsg.style.display = "block"; // Show error message           
-        }
-    });
+            if (!/^\d{10}$/.test(mobileNumber)) {
+                toggleElement('error-msg', 'block');
+                return;
+            }
+            toggleElement('error-msg', 'none');
 
-    // Clear error message on input
-    mobileNumberInput.addEventListener("input", function () {
-        errorMsg.style.display = "none";
-    });
-});
-    
-    //popular plans
-document.addEventListener("DOMContentLoaded", function() {
-    // Get all plan selection buttons
-    const planButtons = document.querySelectorAll('.select-plan-btn');
-    const mobileNumberModal = new bootstrap.Modal(document.getElementById('mobileNumberModal'));
-    const modalMobileInput = document.getElementById('modalMobileNumber');
-    const modalErrorMsg = document.getElementById('modalErrorMsg');
-    const modalSubmitBtn = document.getElementById('modalSubmitBtn');
-    
-    let selectedPlanData = {};
-    
-    // Add click event to all plan buttons
-    planButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Store selected plan data
-            selectedPlanData = {
-                price: this.getAttribute('data-price'),
-                data: this.getAttribute('data-data'),
-                validity: this.getAttribute('data-validity'),
-                ott: this.getAttribute('data-ott')
-            };
-            
-            // Show mobile number modal
-            mobileNumberModal.show();
+            localStorage.setItem('rechargeMobile', mobileNumber);
+            window.location.href = '/project/User/html/plan.html';
         });
-    });
-    
-    // Handle mobile number input validation
-    modalMobileInput.addEventListener('input', function() {
-        modalErrorMsg.style.display = 'none';
-    });
-    
-    // Handle submit button in modal
-    modalSubmitBtn.addEventListener('click', function() {
-        const mobileNumber = modalMobileInput.value.trim();
-        const mobilePattern = /^[6-9]\d{9}$/; // Indian mobile number validation
-        
-        if (mobilePattern.test(mobileNumber)) {
-            // Store plan details and mobile number in localStorage
-            localStorage.setItem('planPrice', selectedPlanData.price);
-            localStorage.setItem('planData', selectedPlanData.data);
-            localStorage.setItem('planValidity', selectedPlanData.validity);
-            localStorage.setItem('planOtt', selectedPlanData.ott);
-            localStorage.setItem('mobileNumber', mobileNumber);
-            
-            // Navigate to payment page
-            window.location.href = '/project/User/html/payment.html';
-        } else {
-            // Show error message
-            modalErrorMsg.style.display = 'block';
-        }
-    });
+    } else {
+        console.error('Element with ID "rechargeNowBtn" not found');
+    }
+
+    // Proceed to plan page event listener
+    const proceedBtn = document.getElementById('proceedToPaymentBtn');
+    if (proceedBtn) {
+        proceedBtn.addEventListener('click', proceedToPlanPage);
+    } else {
+        console.error('Element with ID "proceedToPaymentBtn" not found');
+    }
 });
 
+// Quick Recharge logic
+const quickRechargeBtn = document.getElementById('quickRechargeBtn');
+const quickMobileNumber = document.getElementById('quickMobileNumber');
+const errorMsg = document.getElementById('quickErrorMsg');
 
-
-
-    
-    //review
-    document.addEventListener("DOMContentLoaded", function () {
-        // Ensure the container exists before modifying it
-        let container = document.querySelector(".reviews-scroll");
-        if (!container) {
-            console.error("Error: .reviews-scroll container not found!");
+if (quickRechargeBtn) {
+    quickRechargeBtn.addEventListener('click', async () => {
+        const mobile = quickMobileNumber.value.trim();
+        if (!/^\d{10}$/.test(mobile)) {
+            errorMsg.style.display = 'block';
             return;
         }
-    
-        // Sample user reviews data
-        const reviews = [
-            { name: "Akash", rating: 5, comment: "Excellent service and great recharge plans!" },
-            { name: "Sara Mehta", rating: 4, comment: "Very good experience, but the app can be improved." },
-            { name: "John", rating: 3, comment: "Average service, but customer support is helpful." },
-            { name: "Priya", rating: 5, comment: "Amazing 5G speeds and affordable plans!" },
-            { name: "Rahul", rating: 4, comment: "Great customer service and easy recharge process." },
-            { name: "Ananya", rating: 5, comment: "Best telecom provider I've ever used!" }
-        ];
-    
-        // Function to generate star ratings dynamically
-        function generateStars(rating) {
-            let stars = "";
-            for (let i = 1; i <= 5; i++) {
-                stars += i <= rating ? "★" : "☆";
+        errorMsg.style.display = 'none';
+
+        try {
+            const response = await fetch(`${BASE_URL}/users/quick-recharge`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ quickno: mobile })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText);
             }
-            return stars;
+
+            localStorage.setItem('quickRechargeNumber', '+91' + mobile); // Store locally for plan page
+            alert('Quick recharge number stored. Please select a plan.');
+            window.location.href = '/project/User/html/plan.html';
+        } catch (error) {
+            alert('Failed to store quick recharge number: ' + error.message);
         }
-    
-        // Function to display reviews dynamically
-        function displayReviews() {
-            container.innerHTML = ""; // Clear existing reviews
-    
-            // Duplicate the reviews to create a seamless loop
-            const duplicatedReviews = [...reviews, ...reviews];
-    
-            duplicatedReviews.forEach(review => {
-                container.innerHTML += `
-                    <div class="review-card">
-                        <h5 class="card-title">${review.name}</h5>
-                        <p class="star-rating">${generateStars(review.rating)}</p>
-                        <p class="card-text">"${review.comment}"</p>
+    });
+}
+
+// Utility function to show/hide elements
+const toggleElement = (id, display) => {
+    const element = document.getElementById(id);
+    if (element) element.style.display = display;
+};
+
+// Load popular plans
+async function loadPopularPlans() {
+    try {
+        const response = await fetch(`${BASE_URL}/plans/category/4`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.ok) {
+            const plans = await response.json();
+            const planContainer = document.getElementById('planContainer');
+            const section = document.getElementById('popularPlansSection');
+
+            // Clear any existing content
+            planContainer.innerHTML = '';
+
+            // Add plans dynamically (up to 3)
+            plans.slice(0, 3).forEach(plan => {
+                const planCard = document.createElement('div');
+                planCard.className = 'col-md-4 mb-4';
+                planCard.innerHTML = `
+                    <div class="card plan-card h-100">
+                        <div class="card-body">
+                            <h3 class="card-title text-primary">₹${plan.price}</h3>
+                            <ul class="list-unstyled">
+                                <li>${plan.data}/day Data</li>
+                                <li>${plan.validity}</li>
+                                <li>${plan.benefits}</li>
+                            </ul>
+                            <button class="btn btn-secondary w-100 mt-3 select-plan-btn">Select Plan</button>
+                        </div>
                     </div>
                 `;
+                planContainer.appendChild(planCard);
             });
-        }
-    
-        displayReviews(); // Call the function after the DOM is loaded
-    });
-//scroll to top
-    document.addEventListener("scroll", function () {
-        const scrollToTopBtn = document.getElementById("scrollToTopBtn");
-        if (window.scrollY > 300) {
-            scrollToTopBtn.style.display = "block";
+
+            // Show the section after loading plans
+            section.classList.add('loaded');
+
+            // Add event listeners to select plan buttons
+            document.querySelectorAll('.select-plan-btn').forEach((btn, index) => {
+                btn.addEventListener('click', () => showPlanModal(plans[index]));
+            });
         } else {
-            scrollToTopBtn.style.display = "none";
+            console.error('Failed to load plans:', await response.text());
         }
-    });
-    
-    document.getElementById("scrollToTopBtn").addEventListener("click", function () {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    });
+    } catch (error) {
+        console.error('Error loading plans:', error);
+    }
+}
+
+// Show plan selection modal
+function showPlanModal(plan) {
+    const modalElement = document.getElementById('planSelectionModal');
+    if (!modalElement) {
+        console.error('Modal not found');
+        return;
+    }
+    const modal = new bootstrap.Modal(modalElement);
+    const priceElement = document.getElementById('selectedPlanPrice');
+    const detailsElement = document.getElementById('selectedPlanDetails');
+    if (priceElement && detailsElement) {
+        priceElement.textContent = `₹${plan.price}`;
+        detailsElement.innerHTML = `
+            <li>${plan.data}/day Data</li>
+            <li>${plan.validity}</li>
+            <li>${plan.benefits}</li>
+        `;
+        modal.show();
+    } else {
+        console.error('Modal content not found');
+    }
+}
+
+// Proceed to plan page
+const proceedToPlanPage = () => {
+    const mobile = document.getElementById('modalMobileNumber').value;
+    const error = document.getElementById('mobileNumberError');
+
+    if (!/^\d{10}$/.test(mobile)) {
+        error.style.display = 'block';
+        return;
+    }
+    error.style.display = 'none';
+
+    // Navigate to plan.html instead of processing payment
+    window.location.href = '/project/User/html/plan.html';
+};

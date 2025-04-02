@@ -1,306 +1,213 @@
-const plans = {
-    popular: [
-        { price: 199, data: 2, duration: 28, ott: "Hotstar" },
-        { price: 399, data: 3, duration: 56, ott: "Netflix" },
-        { price: 599, data: 1.5, duration: 84, ott: "Amazon Prime" },
-        { price: 799, data: 2.5, duration: 365, ott: "Sony Live" }
-    ],
-    validity: [
-        { price: 129, data: 1, duration: 24, ott: "None" },
-        { price: 249, data: 2, duration: 45, ott: "Hotstar" },
-        { price: 499, data: 1.5, duration: 90, ott: "Netflix" }
-    ],
-    data: [
-        { price: 19, data: 1, duration: 1, ott: "None" },
-        { price: 49, data: 3, duration: 3, ott: "None" },
-        { price: 99, data: 5, duration: 7, ott: "Amazon Prime" }
-    ],
-    unlimited: [
-        { price: 999, data: 'Unlimited', duration: 90, ott: "Netflix + Amazon Prime" },
-        { price: 1499, data: 'Unlimited', duration: 180, ott: "Hotstar + Netflix" },
-        { price: 2499, data: 'Unlimited', duration: 365, ott: "All OTT" }
-    ]
-};
+const BASE_URL = 'http://localhost:8084';
+        let categories = [];
+        let allPlans = [];
+        let selectedPlan = null;
 
-//navbar
-document.addEventListener("DOMContentLoaded", function () {
-    const authButton = document.getElementById("authButton");
-    function updateAuthButton() {
-        const user = JSON.parse(localStorage.getItem("user"));
-        const isLoggedIn = user && user.token;
+        // Utility to get token from localStorage
+const getToken = () => localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : null;
 
-        if (isLoggedIn) {
-            authButton.textContent = "Profile";
-            authButton.className = "btn btn-primary"; // Optional: Style change
-            authButton.onclick = function () {
-                window.location.href = "/project/User/html/dashboard.html";
-            };
-        } else {
-            authButton.textContent = "Login";
-            authButton.className = "btn btn-outline-light"; // Match initial HTML class
-            authButton.onclick = function () {
-                window.location.href = "/project/User/html/otp.html";
-            };
-        }
-    }
 
-    // Initial update when page loads
-    updateAuthButton();
-});
-
-// Function to display all plans when the page loads
-function showAllPlans() {
-    document.getElementById('categoryTitle').innerText = "All Plans";
-    const plansContainer = document.getElementById('plansContainer');
-    plansContainer.innerHTML = '';
-
-    Object.keys(plans).forEach(category => {
-        plans[category].forEach(plan => {
-            plansContainer.innerHTML += `
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">₹${plan.price}</h5>
-                            <p class="card-text">Data: ${plan.data} GB</p>
-                            <p class="card-text">Validity: ${plan.duration} Days</p>
-                            <p class="card-text"><strong>OTT: ${plan.ott}</strong></p>
-                            <button class="btn" onclick="buyNow('${plan.price}','${plan.data}','${plan.duration}','${plan.ott}')" style="background-color:#2a28a7; color: white;">Recharge</button>
-                        </div>
-                    </div>
-                </div>`;
-        });
-    });
-}
-
-//display label
-// Function to display the stored mobile number on the plan page
-document.addEventListener("DOMContentLoaded", function () {
-    const rechargeDetails = document.getElementById("rechargeDetails");
-    const storedNumber = localStorage.getItem("rechargeNumber");
-    const storedRecharge = document.getElementById("storedRecharge");
-    const enteredNumber = document.getElementById("enteredNumber");
-    const changeRecharge = document.getElementById("changeRecharge");
-    const prepaidPopoverModal = new bootstrap.Modal(document.getElementById('prepaidPopoverModal'));
-    const prepaidMobileInput = document.getElementById("prepaidMobileNumber");
-    const prepaidErrorMsg = document.getElementById("prepaidErrorMsg");
-    const prepaidSubmitBtn = document.getElementById("prepaidSubmitBtn");
-
-    // Flag to track if user came from prepaid link
-    let isFromPrepaid = false;
-    if (localStorage.getItem("fromPrepaidLink") === "true") {
-        isFromPrepaid = true;
-        localStorage.removeItem("fromPrepaidLink"); // Clear after checking
-    }
-
-    // Display stored mobile number if available
-    if (storedNumber && !isFromPrepaid) {
-        enteredNumber.value = storedNumber;
-        // localStorage.removeItem("stroedRecharge");
-        rechargeDetails.style.display = "block";
-    } else {
-        rechargeDetails.style.display = "none";
-    }
-
-    // Variable to store pending plan details
-    let pendingPlan = null;
-
-    // Handle modal submission
-    prepaidSubmitBtn.addEventListener("click", function () {
-        const mobileNumber = prepaidMobileInput.value.trim();
-        const mobilePattern = /^[6-9]\d{9}$/; // Validate Indian mobile number
-
-        if (mobilePattern.test(mobileNumber)) {
-            localStorage.setItem("rechargeNumber", mobileNumber);
-            localStorage.setItem("mobileNumber", mobileNumber); // Sync with other pages
-            enteredNumber.value = mobileNumber;
-            storedRecharge.innerText = mobileNumber;
-            rechargeDetails.style.display = "block";
-            prepaidPopoverModal.hide();
-
-            // Proceed with pending plan if exists
-            if (pendingPlan) {
-                localStorage.setItem("planPrice", pendingPlan.price);
-                localStorage.setItem("planData", pendingPlan.data);
-                localStorage.setItem("planValidity", pendingPlan.duration);
-                localStorage.setItem("planOtt", pendingPlan.ott);
-                window.location.href = "/project/User/html/payment.html";
-                pendingPlan = null;
-            }
-        } else {
-            prepaidErrorMsg.style.display = "block"; // Show error if invalid
-        }
-    });
-
-   // Clear error message on input
-   prepaidMobileInput.addEventListener("input", function () {
-    prepaidErrorMsg.style.display = "none";
-});
-
-    // Handle "Change" link
-    changeRecharge.addEventListener("click", function (event) {
-        event.preventDefault();
-        localStorage.removeItem("rechargeNumber");
-        window.location.href = "/project/User/html/Home.html";
-    });
-    //recharge button handle
-window.buyNow = function(price, data, duration, ott) {
-        if (isFromPrepaid) {
-            // Show modal for prepaid link users
-            pendingPlan = { price, data, duration, ott };
-            prepaidMobileInput.value = localStorage.getItem("rechargeNumber") || "";
-            prepaidPopoverModal.show();
-        } else {
-            const mobileNumber = localStorage.getItem("rechargeNumber") || localStorage.getItem("mobileNumber");
-            if (mobileNumber) {
-                // Proceed to payment if number exists
-                localStorage.setItem("mobileNumber", mobileNumber);
-                localStorage.setItem("rechargeNumber", mobileNumber);
-                localStorage.setItem("planPrice", price);
-                localStorage.setItem("planData", data);
-                localStorage.setItem("planValidity", duration);
-                localStorage.setItem("planOtt", ott);
-                window.location.href = "/project/User/html/payment.html";
+        // Authentication check (unchanged)
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const authButton = document.getElementById('authButton');
+            if (user && user.token) {
+                authButton.textContent = 'Profile';
+                authButton.onclick = () => window.location.href = '/project/User/html/dashboard.html';
             } else {
-                // Show modal if no number is stored
-                pendingPlan = { price, data, duration, ott };
-                prepaidMobileInput.value = "";
-                prepaidPopoverModal.show();
+                authButton.textContent = 'Login';
+                authButton.onclick = () => window.location.href = '/project/User/html/otp.html'; 
+            }
+
+            const modal = document.getElementById('paymentModal');
+            if (modal) modal.style.display = 'none';
+
+            await fetchCategories();
+            await showAllPlans();
+            
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                const searchTerm = e.target.value.trim().toLowerCase();
+                if (searchTerm.length > 0) {
+                    filterPlans(searchTerm);
+                } else {
+                    displayPlans(allPlans);
+                }
+            });
+        });
+
+        // Existing functions (unchanged except for selectPlan)
+        async function fetchCategories() {
+            try {
+                const response = await fetch(`${BASE_URL}/categories`);
+                if (response.ok) {
+                    categories = await response.json();
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
             }
         }
-    };
 
-    // Load all plans (function unchanged, omitted for brevity)
-    showAllPlans();
-});
+        function getCategoryId(category) {
+            const categoryMapping = {
+                popular: 'Popular Plans',
+                validity: 'Validity Plans',
+                data: 'Data Plans',
+                unlimited: 'Unlimited Plans'
+            };
+            const backendCategoryName = categoryMapping[category.toLowerCase()];
+            const categoryObj = categories.find(cat => cat.name.toLowerCase() === backendCategoryName.toLowerCase());
+            return categoryObj ? categoryObj.id : null;
+        }
 
+        async function loadPlans(categoryId = null) {
+            try {
+                const url = categoryId ? `${BASE_URL}/plans/category/${categoryId}` : `${BASE_URL}/plans`;
+                const response = await fetch(url);
+                if (response.ok) {
+                    const plans = await response.json();
+                    if (!categoryId) allPlans = plans;
+                    displayPlans(plans);
+                }
+            } catch (error) {
+                console.error('Error loading plans:', error);
+            }
+        }
 
-// Ensure search also works when clicking the button
-function filterPlans() {
-    const query = document.getElementById('searchBar').value.toLowerCase().trim();
-    const plansContainer = document.getElementById('plansContainer');
-    plansContainer.innerHTML = '';
-
-    if (query === '') {
-        showAllPlans(); // Reset to all plans when input is empty
-        return;
-    }
-
-    let filteredPlans = [];
-    Object.values(plans).forEach(categoryPlans => {
-        filteredPlans = filteredPlans.concat(categoryPlans.filter(plan =>
-            plan.price.toString().includes(query) ||
-            plan.data.toString().includes(query) ||
-            plan.duration.toString().includes(query) ||
-            plan.ott.toLowerCase().includes(query)
-        ));
-    });
-
-    if (filteredPlans.length > 0) {
-        filteredPlans.forEach(plan => {
-            plansContainer.innerHTML += `
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">₹${plan.price}</h5>
-                            <p class="card-text">Data: ${plan.data} GB</p>
-                            <p class="card-text">Validity: ${plan.duration} Days</p>
-                            <p class="card-text"><strong>OTT: ${plan.ott}</strong></p>
-                            <button class="btn" onclick="buyNow('${plan.price}','${plan.data}','${plan.duration}','${plan.ott}')" style="background-color:#2a28a7; color: white;">Recharge</button>
-                        </div>
-                    </div>
-                </div>`;
-        });
-    } else {
-        plansContainer.innerHTML = "<p class='text-center text-muted'>No matching plans found.</p>";
-    }
-}
-
-
-//display all plans while entered
-const defaultCategory="";
-
-// Function to display plans for a selected category
-function showPlans(category) {
-    if (!plans[category]) {
-        console.warn("Invalid category:", category);
-        return;
-    }
-
-    document.getElementById('categoryTitle').innerText = category.charAt(0).toUpperCase() + category.slice(1) + ' Plans';
-    const plansContainer = document.getElementById('plansContainer');
-
-    plansContainer.innerHTML = plans[category].map(plan => `
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">₹${plan.price}</h5>
-                    <p class="card-text">Data: ${plan.data} GB</p>
-                    <p class="card-text">Validity: ${plan.duration} Days</p>
-                    <p class="card-text"><strong>OTT: ${plan.ott}</strong></p>
-                    <button class="btn" onclick="buyNow('${plan.price}','${plan.data}','${plan.duration}','${plan.ott}')" style="background-color:#2a28a7; color: white;">Recharge</button>
+        async function filterPlans(searchTerm) {
+            try {
+                // Show loading state
+                const plansContainer = document.getElementById('plansContainer');
+                plansContainer.innerHTML = '<div class="text-center py-4">Searching plans...</div>';
+                
+                const response = await fetch(`${BASE_URL}/plans/search?term=${encodeURIComponent(searchTerm)}`);
+                
+                if (response.ok) {
+                    const filteredPlans = await response.json();
+                    if (filteredPlans.length === 0) {
+                        displayNoResults(searchTerm);
+                    } else {
+                        displayPlans(filteredPlans);
+                    }
+                } else {
+                    throw new Error('Failed to fetch search results');
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                // Fallback to frontend filtering if API fails
+                const filteredPlans = allPlans.filter(plan => 
+                    String(plan.price).includes(searchTerm) ||
+                    plan.validity.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    plan.data.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    plan.sms.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    plan.calls.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    (plan.benefits && plan.benefits.toLowerCase().includes(searchTerm.toLowerCase()))
+                );
+                displayPlans(filteredPlans.length ? filteredPlans : allPlans);
+            }
+        }
+        
+        function displayNoResults(searchTerm) {
+            const plansContainer = document.getElementById('plansContainer');
+            plansContainer.innerHTML = `
+                <div class="no-results text-center py-5">
+                    <i class="bi bi-search" style="font-size: 2rem;"></i>
+                    <h4 class="mt-3">No plans found for "${searchTerm}"</h4>
+                    <p>Try different search terms or check back later</p>
+                    <button class="btn btn-outline-primary mt-2" onclick="showAllPlans()">Show All Plans</button>
                 </div>
-            </div>
-        </div>`).join("");
-}
+            `;
+        }
 
+        function displayPlans(plans) {
+            const plansContainer = document.getElementById('plansContainer');
+            plansContainer.innerHTML = '';
 
-// Function to filter plans based on search input
-function filterPlans() {
-    const query = document.getElementById('searchBar').value.toLowerCase();
-    const plansContainer = document.getElementById('plansContainer');
-    plansContainer.innerHTML = '';
-
-    let filteredPlans = [];
-    Object.values(plans).forEach(categoryPlans => {
-        filteredPlans = filteredPlans.concat(categoryPlans.filter(plan =>
-            plan.price.toString().includes(query) ||
-            plan.data.toString().includes(query) ||
-            plan.duration.toString().includes(query) ||
-            plan.ott.toLowerCase().includes(query)
-        ));
-    });
-
-    if (filteredPlans.length > 0) {
-        filteredPlans.forEach(plan => {
-            plansContainer.innerHTML += `
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">₹${plan.price}</h5>
-                            <p class="card-text">Data: ${plan.data} GB</p>
-                            <p class="card-text">Validity: ${plan.duration} Days</p>
-                            <p class="card-text"><strong>OTT: ${plan.ott}</strong></p>
-                            <button class="btn" onclick="buyNow('${plan.price}','${plan.data}','${plan.duration}','${plan.ott}')" style="background-color:#2a28a7; color: white;">Recharge</button>
-                        </div>
+            plans.forEach(plan => {
+                const planCard = `
+                    <div class="plan-card">
+                        <h3>₹${plan.price}</h3>
+                        <p><strong>Validity:</strong> ${plan.validity}</p>
+                        <p><strong>Data:</strong> ${plan.data}</p>
+                        <p><strong>SMS:</strong> ${plan.sms}</p>
+                        <p><strong>Calls:</strong> ${plan.calls}</p>
+                        ${plan.benefits ? `<p><strong>Benefits:</strong> ${plan.benefits}</p>` : ''}
+                        <button class="btn btn-custom select-plan-btn" data-plan-id="${plan.id}">Select Plan</button>
                     </div>
-                </div>`;
-        });
-    } else {
-        plansContainer.innerHTML = "<p class='text-center text-muted'>No matching plans found.</p>";
-    }
+                `;
+                plansContainer.innerHTML += planCard;
+            });
 
-    if (query === '') {
-        showAllPlans(); // Ensure all plans are shown again when search is cleared
-    }
-}
+            // Add event listeners to select plan buttons
+            document.querySelectorAll('.select-plan-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const planId = e.target.getAttribute('data-plan-id');
+                    selectedPlan = allPlans.find(plan => plan.id == planId);
+                    showPaymentModal();
+                });
+            });
+        }
 
+        function showPlans(category) {
+            const categoryId = getCategoryId(category);
+            if (categoryId) {
+                document.getElementById('categoryTitle').textContent = 
+                    category.charAt(0).toUpperCase() + category.slice(1) + ' Plans';
+                loadPlans(categoryId);
+            }
+        }
 
-// Event listener for search bar
-document.addEventListener("DOMContentLoaded", function () {
-    const searchBar = document.getElementById('searchBar');
-    if (searchBar) {
-        searchBar.addEventListener('input', filterPlans);
-    } else {
-        console.error("Error: searchBar element not found!");
-    }
-});
+        async function showAllPlans() {
+            document.getElementById('categoryTitle').textContent = 'All Plans';
+            await loadPlans();
+        }
 
+        // New Payment Modal Functions
+        function showPaymentModal() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const modal = document.getElementById('paymentModal');
+            const mobileInput = document.getElementById('paymentMobileNumber');
+            const errorMsg = document.getElementById('paymentErrorMsg');
+            
+            if (!modal || !mobileInput || !errorMsg) return;
+            
+            errorMsg.style.display = 'none';
+            
+            if (user && user.mobile) {
+                mobileInput.value = user.mobile;
+                mobileInput.readOnly = false; // Allow editing for logged-in users
+            } else {
+                mobileInput.value = '';
+                mobileInput.readOnly = false;
+            }
+            
+            modal.style.display = 'block';
+        }
 
-// Load all plans when the page opens
-document.addEventListener("DOMContentLoaded", showAllPlans);
+        function closePaymentModal() {
+            const modal = document.getElementById('paymentModal');
+            if (modal) modal.style.display = 'none';
+        }
 
-function selectPlan(planName, amount) {
-    localStorage.setItem("selectedPlan", planName);
-    localStorage.setItem("planAmount", amount);
-    window.location.href = "/project/User/html/payment.html"; // Redirect to payment page
-}
+        function submitPayment() {
+            const mobileInput = document.getElementById('paymentMobileNumber');
+            const errorMsg = document.getElementById('paymentErrorMsg');
+            const mobileNumber = mobileInput.value.trim();
+
+            if (!/^\d{10}$/.test(mobileNumber)) {
+                errorMsg.textContent = 'Please enter a valid 10-digit mobile number';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            localStorage.setItem('selectedPlan', JSON.stringify(selectedPlan));
+            localStorage.setItem('rechargeMobile', mobileNumber);
+            window.location.href = '/project/User/html/payment.html';
+        }
+
+        // Back button handler (if exists)
+        const backToPlansBtn = document.getElementById('backToPlansBtn');
+        if (backToPlansBtn) {
+            backToPlansBtn.addEventListener('click', () => {
+                window.location.href = '/project/User/html/plan.html';
+            });
+        }
