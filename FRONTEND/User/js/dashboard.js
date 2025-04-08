@@ -23,7 +23,7 @@ const updateAuthButtonAndProfile = () => {
         // User is not logged in
         profileDropdown.style.display = 'none';
         console.log('No token found, redirecting to OTP page');
-        window.location.href = '/project/User/html/otp.html';
+        window.location.href = '../html/otp.html';
     }
 };
 
@@ -32,7 +32,7 @@ async function fetchTransactions(){
     const user = getUserData();
     if (!user.token) {
         console.log('No token found, redirecting to login');
-        window.location.href = '/project/User/html/otp.html';
+        window.location.href = '../html/otp.html';
         return;
     }
 
@@ -47,7 +47,7 @@ async function fetchTransactions(){
                 // Token expired or invalid, redirect to login
                 console.log('Unauthorized, redirecting to login');
                 localStorage.removeItem('user');
-                window.location.href = '/project/User/html/otp.html';
+                window.location.href = '../html/otp.html';
                 return;
             }
             throw new Error(`Failed to fetch transactions: ${response.statusText}`);
@@ -78,7 +78,7 @@ const displayTransactions = (transactions,user) => {
                 <td>${user.username}</td>
                 <td>${tx.payment_mode}</td>
                 <td>₹${tx.amount}</td>
-                <td>${tx.validity || 'N/A'} Days</td>
+                <td>${tx.validity || 'N/A'}</td>
                 <td>${tx.status}</td>
                 <td>${formattedDate}</td>
             </tr>`;
@@ -89,7 +89,7 @@ const displayTransactions = (transactions,user) => {
 const logout = async () => {
     const user = getUserData();
     if (!user.token) {
-        window.location.href = '/project/User/html/index.html';
+        window.location.href = '../html/index.html';
         return;
     }
 
@@ -106,7 +106,7 @@ const logout = async () => {
     } finally {
         // Always clear localStorage and redirect, even if logout fails
         localStorage.removeItem('user');
-        window.location.href = '/project/User/html/index.html';
+        window.location.href = '../html/index.html';
     }
 };
 

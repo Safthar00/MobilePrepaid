@@ -1,27 +1,28 @@
 document.addEventListener("DOMContentLoaded", function () {
     const authButton = document.getElementById("authButton");
+
+    // Function to update the auth button based on login status
     function updateAuthButton() {
         const user = JSON.parse(localStorage.getItem("user"));
         const isLoggedIn = user && user.token;
 
         if (isLoggedIn) {
             authButton.textContent = "Profile";
-            authButton.className = "btn btn-primary"; 
+            authButton.className = "btn btn-primary";
             authButton.onclick = function () {
-                window.location.href = "/project/User/html/dashboard.html";
+                window.location.href = "../html/dashboard.html";
             };
         } else {
             authButton.textContent = "Login";
-            authButton.className = "btn btn-outline-light"; 
+            authButton.className = "btn btn-outline-light";
             authButton.onclick = function () {
-                window.location.href = "/project/User/html/otp.html";
+                window.location.href = "../html/otp.html";
             };
         }
     }
 
     // Initial update when page loads
     updateAuthButton();
-    
 
     let form = document.getElementById("supportForm");
     let toastEl = document.getElementById("successToast");
@@ -47,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let isValid = true;
 
+        // Name validation
         if (!nameValue) {
             name.classList.add("is-invalid");
             nameError.innerHTML = "Name is required.";
@@ -60,6 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
             nameError.innerHTML = "";
         }
 
+        // Email validation
         if (!emailValue) {
             email.classList.add("is-invalid");
             emailError.innerHTML = "Email is required.";
@@ -73,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
             emailError.innerHTML = "";
         }
 
+        // Subject validation
         if (!subjectValue) {
             subject.classList.add("is-invalid");
             subjectError.innerHTML = "Subject is required.";
@@ -82,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
             subjectError.innerHTML = "";
         }
 
+        // Message validation
         if (!messageValue) {
             message.classList.add("is-invalid");
             messageError.innerHTML = "Message is required.";
@@ -93,12 +98,64 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!isValid) return;
 
-        let formData = { name: nameValue, email: emailValue, subject: subjectValue, message: messageValue, timestamp: new Date().toISOString() };
-        let submissions = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
-        submissions.push(formData);
-        localStorage.setItem('formSubmissions', JSON.stringify(submissions));
+        // Prepare data to send to the backend
+        let formData = {
+            name: nameValue,
+            email: emailValue,
+            subject: subjectValue,
+            message: messageValue
+        };
 
-        toast.show();
-        form.reset();
+        // Send form data to the backend
+        fetch('http://127.0.0.1:8084/support', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Support message saved:', data);
+            toast.show(); // Show success toast
+            form.reset(); // Reset the form
+        })
+        .catch(error => {
+            console.error('Error submitting support message:', error);
+            alert('There was an error submitting your message. Please try again.');
+        });
     });
+
+    // Optional: Function to fetch and display all support messages (not used in current HTML)
+    function fetchSupportMessages() {
+        fetch('http://127.0.0.1:8084/support', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('All support messages:', data);
+            // If you want to display these messages, you can add logic here
+            // For example, append them to a div in the HTML
+        })
+        .catch(error => {
+            console.error('Error fetching support messages:', error);
+        });
+    }
+
+    // Uncomment the line below if you want to fetch messages on page load
+    // fetchSupportMessages();
 });

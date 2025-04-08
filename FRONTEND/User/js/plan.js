@@ -12,10 +12,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const authButton = document.getElementById('authButton');
     if (user && user.token) {
         authButton.textContent = 'Profile';
-        authButton.onclick = () => window.location.href = '/project/User/html/dashboard.html';
+        authButton.onclick = () => window.location.href = '../html/dashboard.html';
     } else {
         authButton.textContent = 'Login';
-        authButton.onclick = () => window.location.href = '/project/User/html/otp.html'; 
+        authButton.onclick = () => window.location.href = '../html/otp.html'; 
     }
 
     const modal = document.getElementById('paymentModal');
@@ -224,13 +224,13 @@ function submitPayment() {
 
     localStorage.setItem('selectedPlan', JSON.stringify(selectedPlan));
     localStorage.setItem('rechargeMobile', mobileNumber);
-    window.location.href = '/project/User/html/payment.html';
+    window.location.href = '../html/payment.html';
 }
 
 // Back button handler
 const backToPlansBtn = document.getElementById('backToPlansBtn');
 if (backToPlansBtn) {
     backToPlansBtn.addEventListener('click', () => {
-        window.location.href = '/project/User/html/plan.html';
+        window.location.href = '../html/plan.html';
     });
 }

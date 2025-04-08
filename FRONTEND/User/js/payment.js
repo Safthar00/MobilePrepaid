@@ -42,7 +42,7 @@ function initiateRazorpayPayment() {
                 console.log("Transaction save response:", responseData);
                 if (saveResponse.ok) {
                     // Redirect to success page on successful save
-                    window.location.href = "/project/User/html/success.html";
+                    window.location.href = "../html/success.html";
                 } else {
                     throw new Error("Failed to save transaction");
                 }
@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Handle Back to Plans button (existing functionality preserved)
     backToPlansBtn.addEventListener("click", function () {
-        window.location.href = "/project/User/html/plan.html";
+        window.location.href = "../html/plan.html";
     });
 
     // Populate payment summary (example, adjust as per your actual data structure)

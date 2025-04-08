@@ -17,16 +17,16 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="/project/User/html/index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./index.html">Home</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="rechargeDropdown" role="button" data-bs-toggle="dropdown">Recharge</a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a class="dropdown-item" href="/project/User/html/plan.html" onclick="localStorage.setItem('fromPrepaidLink', 'true')">Prepaid</a>
+                                <a class="dropdown-item" href="./plan.html" onclick="localStorage.setItem('fromPrepaidLink', 'true')">Prepaid</a>
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="/project/User/html/support.html">Support</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./support.html">Support</a></li>
                     <li class="nav-item position-relative">
                         <a class="nav-link" href="#" id="notificationBtn">
                             <i class="fas fa-bell"></i>
@@ -38,7 +38,7 @@
                             <i class="fas fa-user-circle"></i> <span id="profileName"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/project/User/html/profile.html"><i class="fas fa-user"></i> Edit Profile</a></li>
+                            <li><a class="dropdown-item" href="./profile.html"><i class="fas fa-user"></i> Edit Profile</a></li>
                             <li><hr class="dropdown-divider"></hr></li>
                             <li><a class="dropdown-item" href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                         </ul>
@@ -51,13 +51,13 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="user-info">
-            <img src="../../img/profile.png" alt="Profile Picture">
+            <img src="../../img/profile.jpg" alt="Profile Picture">
             <h6 id="sidebarName">John Doe</h6>
             <input type="text" id="sidebarMobile" value="+91 9876543210" disabled>
         </div>
         <a href="#dashboard" class="active"><i class="fas fa-home me-2"></i>Dashboard</a>
         <a href="#usage"><i class="fas fa-chart-line me-2"></i>Activity Overview</a>
-        <a href="#support"><i class="fas fa-headset me-2"></i>Support</a>
+        <a href="./support.html"><i class="fas fa-headset me-2"></i>Support</a>
     </div>
 
     <!-- Notification Panel -->
@@ -156,13 +156,13 @@
             <div class="dashboard-card">
                 <h5>Quick Actions</h5>
                 <div class="d-grid gap-2 mt-2">
-                    <button class="btn btn-sm" style="background-color: var(--primary-color); color: white;" onclick="window.location.href='/project/User/html/plan.html'">
+                    <button class="btn btn-sm" style="background-color: var(--primary-color); color: white;" onclick="window.location.href='./plan.html'">
                         <i class="fas fa-mobile-alt me-1"></i>Recharge
                     </button>
-                    <button class="btn btn-sm" style="background-color: var(--primary-color); color: white;" onclick="window.location.href='/project/User/html/plan.html'">
+                    <button class="btn btn-sm" style="background-color: var(--primary-color); color: white;" onclick="window.location.href='./plan.html'">
                         <i class="fas fa-file-invoice me-1"></i>Offers
                     </button>
-                    <button class="btn btn-sm" style="background-color: var(--primary-color); color: white;" onclick="window.location.href='/project/User/html/index.html'">
+                    <button class="btn btn-sm" style="background-color: var(--primary-color); color: white;" onclick="window.location.href='./index.html'">
                         <i class="fas fa-life-ring me-1"></i>Support
                     </button>
                 </div>

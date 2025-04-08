@@ -33,7 +33,7 @@ body {
 }
 
 .nav-link:hover {
-    color: var(--accent-color) !important;
+    color: var(--progress-color) !important;
 }
 
 .dropdown-menu {

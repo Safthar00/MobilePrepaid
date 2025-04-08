@@ -17,6 +17,36 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
+    function showToast(message, type = 'success') {
+        const toastContainer = document.createElement('div');
+        toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        document.body.appendChild(toastContainer);
+
+        const toastElement = document.createElement('div');
+        toastElement.className = `toast align-items-center text-bg-${type} border-0`;
+        toastElement.setAttribute('role', 'alert');
+        toastElement.setAttribute('aria-live', 'assertive');
+        toastElement.setAttribute('aria-atomic', 'true');
+
+        toastElement.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        `;
+
+        toastContainer.appendChild(toastElement);
+        const toast = new bootstrap.Toast(toastElement);
+        toast.show();
+
+        toastElement.addEventListener('hidden.bs.toast', () => {
+            toastElement.remove();
+            toastContainer.remove();
+        });
+    }
+
     // Fetch admin profile data
     async function loadAdminProfile() {
         try {
@@ -40,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('phoneNumber').value = adminData.phone || '';
         } catch (error) {
             console.error('Error loading profile:', error);
-            alert('Failed to load profile: ' + error.message);
+            showToast('Failed to load profile: ' + error.message, 'danger');
         }
     }
 
@@ -80,11 +110,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error('Failed to update password');
                 }
 
-                alert('Password changed successfully!');
-                passwordInput.value = '********'; // Reset to masked value after save
+                showToast('Password changed successfully!', 'success');                passwordInput.value = '********'; // Reset to masked value after save
             } catch (error) {
                 console.error('Error updating password:', error);
-                alert('Failed to update password: ' + error.message);
+                showToast('Failed to update password: ' + error.message, 'danger'); 
             }
         }
     });

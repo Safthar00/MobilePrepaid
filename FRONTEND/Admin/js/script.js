@@ -51,6 +51,68 @@ function showToast(message, type = 'primary') {
     });
 }
 
+function loadAnalytics() {
+    // Static Chart Data
+    const subscribersGrowthData = {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+            label: 'Subscribers',
+            data: [100, 150, 125, 250, 220, 350],
+            backgroundColor: 'rgba(48, 79, 254, 0.2)',
+            borderColor: 'rgba(48, 79, 254, 1)',
+            borderWidth: 2
+        }]
+    };
+    new Chart(document.getElementById('subscribersGrowthChart'), {
+        type: 'line',
+        data: subscribersGrowthData,
+        options: { scales: { y: { beginAtZero: true } } }
+    });
+
+    const paymentMethodData = {
+        labels: ['UPI', 'Card', 'Net Banking'],
+        datasets: [{
+            label: 'Payments',
+            data: [500, 300, 200],
+            backgroundColor: ['#304ffe', '#0277bd', '#e3f2fd']
+        }]
+    };
+    new Chart(document.getElementById('paymentMethodChart'), {
+        type: 'pie',
+        data: paymentMethodData
+    });
+
+    const revenueTrendData = {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+            label: 'Revenue (₹)',
+            data: [50000, 60000, 30000, 80000, 90000, 100000],
+            backgroundColor: 'rgba(2, 119, 189, 0.2)',
+            borderColor: 'rgba(2, 119, 189, 1)',
+            borderWidth: 2
+        }]
+    };
+    new Chart(document.getElementById('revenueTrendChart'), {
+        type: 'line',
+        data: revenueTrendData,
+        options: { scales: { y: { beginAtZero: true } } }
+    });
+
+    const popularPlansData = {
+        labels: ['₹199', '₹299', '₹399', '₹599'],
+        datasets: [{
+            label: 'Subscriptions',
+            data: [400, 300, 200, 100],
+            backgroundColor: ['#304ffe', '#0277bd', '#e3f2fd', '#1a237e']
+        }]
+    };
+    new Chart(document.getElementById('popularPlansChart'), {
+        type: 'bar',
+        data: popularPlansData,
+        options: { scales: { y: { beginAtZero: true } } }
+    });
+}
+
 // Load Registered Users Table
 async function loadUsers() {
     try {
@@ -358,11 +420,12 @@ function setupSidebarAndNavigation() {
 // Initialize Page
 document.addEventListener('DOMContentLoaded', function () {
     if (!getAuthToken()) {
-        window.location.href = '/project/Admin/html/admin-login.html';
+        window.location.href = '../html/admin-login.html';
         return;
     }
 
     // Load initial data
+    loadAnalytics();
     loadUsers();
     loadRechargePlans();
 
@@ -370,7 +433,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setupSidebarAndNavigation();
 
     document.getElementById('adminProfileBtn').addEventListener('click', function() {
-        window.location.href = "/project/Admin/html/admin-profile.html";
+        window.location.href = "../html/admin-profile.html";
     });
     
     // Event listeners for buttons

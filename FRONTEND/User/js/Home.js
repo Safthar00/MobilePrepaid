@@ -6,10 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const authButton = document.getElementById('authButton');
     if (user) {
         authButton.textContent = 'Profile';
-        authButton.onclick = () => window.location.href = '/project/User/html/dashboard.html';
+        authButton.onclick = () => window.location.href = '../html/dashboard.html';
     } else {
         authButton.textContent = 'Login';
-        authButton.onclick = () => window.location.href = '/project/User/html/otp.html';
+        authButton.onclick = () => window.location.href = '../html/otp.html';
     }
 
     // Load popular plans
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Store mobile number with country code in localStorage
             localStorage.setItem('rechargeMobile', mobileNumber);
-            window.location.href = '/project/User/html/plan.html';
+            window.location.href = '../html/plan.html';
         });
     } else {
         console.error('Element with ID "quickRechargeBtn" not found');
@@ -144,5 +144,5 @@ const proceedToPlanPage = () => {
     localStorage.setItem('rechargeMobile', mobile);
 
     // Navigate to plan.html instead of processing payment
-    window.location.href = '/project/User/html/plan.html';
+    window.location.href = '../html/plan.html';
 };
