@@ -28,7 +28,7 @@ const updateAuthButtonAndProfile = () => {
 };
 
 // Fetch transaction history
-const fetchTransactions = async () => {
+async function fetchTransactions(){
     const user = getUserData();
     if (!user.token) {
         console.log('No token found, redirecting to login');
@@ -38,7 +38,8 @@ const fetchTransactions = async () => {
 
     try {
         console.log("User from localStorage:", user);
-        const response = await fetch(`${BASE_URL}/transactions`, {
+        console.log("Sending request with token:", user.token);
+        const response = await fetch(`${BASE_URL}/transactions/user-transactions`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${user.token}` }        });
         if (!response.ok) {
@@ -52,15 +53,15 @@ const fetchTransactions = async () => {
             throw new Error(`Failed to fetch transactions: ${response.statusText}`);
         }
         const transactions = await response.json();
-        displayTransactions(transactions);
+        displayTransactions(transactions,user);
     } catch (error) {
         console.error('Error fetching transactions:', error);
         alert('Failed to load transactions. Please try again later.');
     }
-};
+}
 
 // Display transactions
-const displayTransactions = (transactions) => {
+const displayTransactions = (transactions,user) => {
     const tbody = document.getElementById('transactionTableBody');
     if (!tbody) {
         console.error('Element with ID "transactionTableBody" not found');
@@ -73,9 +74,9 @@ const displayTransactions = (transactions) => {
         const formattedDate = isNaN(transactionDate) ? 'Invalid Date' : transactionDate.toLocaleDateString();
         tbody.innerHTML += `
             <tr>
-                <td>${tx.transId}</td>
-                <td>${tx.user.username}</td>
-                <td>${tx.paymentMode}</td>
+                <td>${tx.trans_id}</td>
+                <td>${user.username}</td>
+                <td>${tx.payment_mode}</td>
                 <td>₹${tx.amount}</td>
                 <td>${tx.validity || 'N/A'} Days</td>
                 <td>${tx.status}</td>

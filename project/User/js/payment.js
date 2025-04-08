@@ -33,7 +33,7 @@ function initiateRazorpayPayment() {
                 payment_mode: "RAZORPAY",
                 status: "SUCCESS",
                 tran_date: new Date().toISOString().split("T")[0],
-                user: { user_id: user.userId }
+                user_id: user.userId
             };
             try {
                 // Send transaction data to backend
