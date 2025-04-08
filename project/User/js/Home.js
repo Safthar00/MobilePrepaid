@@ -16,23 +16,30 @@ document.addEventListener('DOMContentLoaded', () => {
     loadPopularPlans();
 
     // Handle quick recharge
-    const rechargeNowBtn = document.getElementById('rechargeNowBtn');
-    if (rechargeNowBtn) {
-        rechargeNowBtn.addEventListener('click', () => {
-            const mobileNumber = document.getElementById('mobileNumber').value;
+    const quickRechargeBtn = document.getElementById('quickRechargeBtn');
+    if (quickRechargeBtn) {
+        quickRechargeBtn.addEventListener('click', () => {
+            const mobileNumber = document.getElementById('quickMobileNumber').value;
             const errorMsg = document.getElementById('error-msg');
 
-            if (!/^\d{10}$/.test(mobileNumber)) {
+            if (!mobileNumber) {
+                console.error('Error: Element with ID "mobileNumber" not found in the DOM');
+                if (errorMsg) toggleElement('error-msg', 'block'); // Show error if errorMsg exists
+                return;
+            }
+            // Indian mobile number regex: starts with 6,7,8,9 followed by 9 digits
+            if (!/^[6-9]\d{9}$/.test(mobileNumber)) {
                 toggleElement('error-msg', 'block');
                 return;
             }
             toggleElement('error-msg', 'none');
 
+            // Store mobile number with country code in localStorage
             localStorage.setItem('rechargeMobile', mobileNumber);
             window.location.href = '/project/User/html/plan.html';
         });
     } else {
-        console.error('Element with ID "rechargeNowBtn" not found');
+        console.error('Element with ID "quickRechargeBtn" not found');
     }
 
     // Proceed to plan page event listener
@@ -43,43 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Element with ID "proceedToPaymentBtn" not found');
     }
 });
-
-// Quick Recharge logic
-const quickRechargeBtn = document.getElementById('quickRechargeBtn');
-const quickMobileNumber = document.getElementById('quickMobileNumber');
-const errorMsg = document.getElementById('quickErrorMsg');
-
-if (quickRechargeBtn) {
-    quickRechargeBtn.addEventListener('click', async () => {
-        const mobile = quickMobileNumber.value.trim();
-        if (!/^\d{10}$/.test(mobile)) {
-            errorMsg.style.display = 'block';
-            return;
-        }
-        errorMsg.style.display = 'none';
-
-        try {
-            const response = await fetch(`${BASE_URL}/users/quick-recharge`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ quickno: mobile })
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText);
-            }
-
-            localStorage.setItem('quickRechargeNumber', '+91' + mobile); // Store locally for plan page
-            alert('Quick recharge number stored. Please select a plan.');
-            window.location.href = '/project/User/html/plan.html';
-        } catch (error) {
-            alert('Failed to store quick recharge number: ' + error.message);
-        }
-    });
-}
 
 // Utility function to show/hide elements
 const toggleElement = (id, display) => {
@@ -112,7 +82,7 @@ async function loadPopularPlans() {
                         <div class="card-body">
                             <h3 class="card-title text-primary">₹${plan.price}</h3>
                             <ul class="list-unstyled">
-                                <li>${plan.data}/day Data</li>
+                                <li>${plan.data}</li>
                                 <li>${plan.validity}</li>
                                 <li>${plan.benefits}</li>
                             </ul>
@@ -171,6 +141,7 @@ const proceedToPlanPage = () => {
         return;
     }
     error.style.display = 'none';
+    localStorage.setItem('rechargeMobile', mobile);
 
     // Navigate to plan.html instead of processing payment
     window.location.href = '/project/User/html/plan.html';

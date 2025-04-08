@@ -35,10 +35,10 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle"></i> <span id="profileName">John Doe</span>
+                            <i class="fas fa-user-circle"></i> <span id="profileName"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> Edit Profile</a></li>
+                            <li><a class="dropdown-item" href="/project/User/html/profile.html"><i class="fas fa-user"></i> Edit Profile</a></li>
                             <li><hr class="dropdown-divider"></hr></li>
                             <li><a class="dropdown-item" href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                         </ul>
@@ -156,13 +156,13 @@
             <div class="dashboard-card">
                 <h5>Quick Actions</h5>
                 <div class="d-grid gap-2 mt-2">
-                    <button class="btn btn-sm" style="background-color: var(--primary-color); color: white;">
+                    <button class="btn btn-sm" style="background-color: var(--primary-color); color: white;" onclick="window.location.href='/project/User/html/plan.html'">
                         <i class="fas fa-mobile-alt me-1"></i>Recharge
                     </button>
-                    <button class="btn btn-sm" style="background-color: var(--primary-color); color: white;">
+                    <button class="btn btn-sm" style="background-color: var(--primary-color); color: white;" onclick="window.location.href='/project/User/html/plan.html'">
                         <i class="fas fa-file-invoice me-1"></i>Offers
                     </button>
-                    <button class="btn btn-sm" style="background-color: var(--primary-color); color: white;">
+                    <button class="btn btn-sm" style="background-color: var(--primary-color); color: white;" onclick="window.location.href='/project/User/html/index.html'">
                         <i class="fas fa-life-ring me-1"></i>Support
                     </button>
                 </div>
@@ -175,9 +175,10 @@
                         <thead>
                             <tr>
                                 <th>Tx ID</th>
-                                <th>User</th>
+                                <th>Username</th>
                                 <th>Mode</th>
                                 <th>Amt</th>
+                                <th>Validity</th>
                                 <th>Status</th>
                                 <th>Date</th>
                             </tr>

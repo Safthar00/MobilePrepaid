@@ -1,97 +1,150 @@
-const BASE_URL = 'http://localhost:8084';
+// Base URL for API requests (adjust as per your backend setup)
+const BASE_URL = "http://localhost:8084"; // Replace with your actual backend URL
 
-document.addEventListener("DOMContentLoaded", function () {
-    // Check if Razorpay is loaded
-    if (typeof Razorpay === 'undefined') {
-        console.error('Razorpay not available');
-        const payBtn = document.getElementById("payNowBtn");
-        payBtn.disabled = true;
-        payBtn.textContent = 'Payment Service Unavailable';
-        payBtn.classList.add('btn-danger');
-        return;
-    }
-
-    // Retrieve plan details
-    const selectedPlan = JSON.parse(localStorage.getItem("selectedPlan"));
-    const mobileNumber = localStorage.getItem("rechargeMobile") || "Not Available";
-    const user = JSON.parse(localStorage.getItem('user')) || {}; // Make user optional
+// Function to initialize Razorpay payment
+function initiateRazorpayPayment() {
+    // Retrieve logged-in user details from localStorage
+    const user = JSON.parse(localStorage.getItem('user')) || {};
     
-    // Validate data
-    if (!selectedPlan || !mobileNumber) {
-        alert("No plan selected or mobile number missing. Redirecting to plans page.");
-        window.location.href = "/project/User/html/plan.html";
+
+    // Fetch selected plan details from localStorage
+    const selectedPlan = JSON.parse(localStorage.getItem("selectedPlan")) || {};
+    const { id: planId, price, name, validity, description } = selectedPlan;
+
+    if (!planId || !price) {
+        alert("No plan selected. Please choose a plan first.");
         return;
     }
 
-    // Display plan details
-    document.getElementById("summaryMobile").innerText = `Mobile Number: ${mobileNumber}`;
-    document.getElementById("summaryPlan").innerText = `Plan: ₹${selectedPlan.price}`;
-    document.getElementById("summaryData").innerText = `Data: ${selectedPlan.data}`;
-    document.getElementById("summaryValidity").innerText = `Validity: ${selectedPlan.validity}`;
-    document.getElementById("summaryOtt").innerText = `Benefits: ${selectedPlan.benefits || "None"}`;
+    // Razorpay options
+    const options = {
+        key: "rzp_test_1DP5mmOlF5G5ag", // Replace with your Razorpay Key ID
+        amount: price * 100, // Amount in paise 
+        currency: "INR",
+        name: "TelecomX",
+        description: description || `Recharge for plan: ${name}`,
+        handler: async function (response) {
+            console.log("Razorpay response:", response);
+            const transId = response.razorpay_payment_id || "TEMP_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);            
+            const transactionData = {
+                trans_id: transId,
+                amount: price,
+                validity:validity,
+                payment_mode: "RAZORPAY",
+                status: "SUCCESS",
+                tran_date: new Date().toISOString().split("T")[0],
+                user: { user_id: user.userId }
+            };
+            try {
+                // Send transaction data to backend
+                const saveResponse = await saveTransaction(transactionData);
+                const responseData = await saveResponse.json();
+                console.log("Transaction save response:", responseData);
+                if (saveResponse.ok) {
+                    // Redirect to success page on successful save
+                    window.location.href = "/project/User/html/success.html";
+                } else {
+                    throw new Error("Failed to save transaction");
+                }
+            } catch (error) {
+                console.error("Error saving transaction:", error);
+                alert("Payment was successful, but there was an issue saving the transaction. Please contact support.");
+            }
+        },
+        prefill: {
+            name: user.firstName + " " + user.lastName || "",
+            email: user.email || "",
+            contact: localStorage.getItem("rechargeMobile")?.replace('+91', '') || ""        },
+        theme: {
+            color: "#002349", 
+        },
+        modal: {
+            ondismiss: function () {
+                console.log("Payment modal closed by user");
+                setButtonLoading(document.getElementById("payNowBtn"), false);
+            },
+        },
+    };
 
-    // Back to Plans button
-    document.getElementById("backToPlansBtn").addEventListener("click", function() {
-        window.location.href = "/project/User/html/plan.html";
-    });
+    // Initialize Razorpay
+    const rzp = new Razorpay(options);
 
-    // Pay Now button - Direct Razorpay integration
-    document.getElementById("payNowBtn").addEventListener("click", async function () {
-        // Store all required data in localStorage for success page
-        localStorage.setItem("mobileNumber", mobileNumber);
-        localStorage.setItem("planPrice", selectedPlan.price);
-        localStorage.setItem("planData", selectedPlan.data);
-        localStorage.setItem("planValidity", selectedPlan.validity);
-        localStorage.setItem("planOtt", selectedPlan.benefits || "None");
-        localStorage.setItem("paymentMode", "Razorpay");
+    // Open Razorpay checkout
+    rzp.open();
 
-        const payBtn = this;
-        payBtn.disabled = true;
-        payBtn.textContent = 'Processing...';
+    // Handle payment failure
+    rzp.on("payment.failed", async function (response) {
+        console.error("Payment failed:", response.error);
+        const transId = response.error.metadata.payment_id || "FAILED_" + Date.now();
+        const transactionData = {
+            trans_id: transId,
+            amount: price,
+            validity:validity,
+            payment_mode: "RAZORPAY",
+            status: "FAIL",
+            tran_date: new Date().toISOString().split("T")[0],
+            user: { user_id: user.userId }
+        };
 
         try {
-            // Razorpay options
-            const options = {
-                key: "rzp_test_1DP5mmOlF5G5ag", // Your Razorpay test key
-                amount: selectedPlan.price * 100, // Amount in paise
-                currency: "INR",
-                name: "TelecomX Recharge",
-                description: `Recharge for ${mobileNumber}`,
-                image: "/project/User/assets/logo.png", // Local logo path
-                handler: function (response) {
-                    // On successful payment
-                    localStorage.setItem("transactionId", response.razorpay_payment_id);
-                    window.location.href = "/project/User/html/success.html";
-                },
-                prefill: {
-                    name: user.name || "Customer",
-                    email: user.email || "customer@example.com",
-                    contact: mobileNumber
-                },
-                theme: {
-                    color: "#002349"
-                },
-                modal: {
-                    ondismiss: function() {
-                        payBtn.disabled = false;
-                        payBtn.textContent = 'Pay Now';
-                    }
-                }
-            };
-
-            const rzp = new Razorpay(options);
-            rzp.on('payment.failed', function(response) {
-                console.error('Payment failed:', response.error);
-                alert(`Payment failed: ${response.error.description}`);
-                payBtn.disabled = false;
-                payBtn.textContent = 'Try Again';
-            });
-            rzp.open();
+            await saveTransaction(transactionData);
         } catch (error) {
-            console.error('Payment initialization error:', error);
-            alert('Payment initialization failed: ' + error.message);
-            payBtn.disabled = false;
-            payBtn.textContent = 'Pay Now';
+            console.error("Failed to save failed transaction:", error);
         }
+
+        alert(`Payment failed: ${response.error.description}`);
+        setButtonLoading(document.getElementById("payNowBtn"), false);
     });
+}
+
+// Function to save transaction to backend
+async function saveTransaction(transactionData) {
+    const response = await fetch(`${BASE_URL}/transactions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(transactionData),
+    });
+    console.log("Sending transaction data:", transactionData);
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response;
+}
+
+// Utility function to toggle button loading state
+function setButtonLoading(button, isLoading) {
+    if (isLoading) {
+        button.disabled = true;
+        button.innerHTML = "Processing...";
+    } else {
+        button.disabled = false;
+        button.innerHTML = "Pay Now";
+    }
+}
+
+// Event listener for Pay Now button
+document.addEventListener("DOMContentLoaded", function () {
+    const payNowBtn = document.getElementById("payNowBtn");
+    const backToPlansBtn = document.getElementById("backToPlansBtn");
+
+    // Handle Pay Now button click
+    payNowBtn.addEventListener("click", function () {
+        setButtonLoading(payNowBtn, true);
+        initiateRazorpayPayment();
+    });
+
+    // Handle Back to Plans button (existing functionality preserved)
+    backToPlansBtn.addEventListener("click", function () {
+        window.location.href = "/project/User/html/plan.html";
+    });
+
+    // Populate payment summary (example, adjust as per your actual data structure)
+    const selectedPlan = JSON.parse(localStorage.getItem("selectedPlan")) || {};
+    document.getElementById("summaryMobile").textContent = `Mobile: ${localStorage.getItem("rechargeMobile") || "N/A"}`;
+    document.getElementById("summaryPlan").textContent = `Plan: ${selectedPlan.name || "N/A"}`;
+    document.getElementById("summaryData").textContent = `Data: ${selectedPlan.data || "N/A"}`;
+    document.getElementById("summaryValidity").textContent = `Validity: ${selectedPlan.validity || "N/A"}`;
+    document.getElementById("summaryOtt").textContent = `OTT Benefits: ${selectedPlan.benefits || "None"}`;
 });

@@ -6,8 +6,8 @@ const getUserData = () => JSON.parse(localStorage.getItem('user')) || {};
 // Update profile info and handle login state
 const updateAuthButtonAndProfile = () => {
     const user = getUserData();
-    const profileDropdown = document.getElementById('profileDropdown'); // Use existing dropdown instead of authButton
-    
+    const profileDropdown = document.getElementById('profileDropdown');
+
     if (!profileDropdown) {
         console.error('Element with ID "profileDropdown" not found');
         return;
@@ -15,15 +15,15 @@ const updateAuthButtonAndProfile = () => {
 
     if (user.token) {
         // User is logged in
-        profileDropdown.style.display = 'block'; // Show dropdown
+        profileDropdown.style.display = 'block';
         document.getElementById('profileName').textContent = user.name || 'User';
         document.getElementById('sidebarName').textContent = user.name || 'User';
         document.getElementById('sidebarMobile').value = user.mobile || '+91 Unknown';
     } else {
         // User is not logged in
-        profileDropdown.style.display = 'none'; // Hide dropdown
+        profileDropdown.style.display = 'none';
         console.log('No token found, redirecting to OTP page');
-        window.location.href = '/project/User/html/otp.html'; // Redirect to login
+        window.location.href = '/project/User/html/otp.html';
     }
 };
 
@@ -37,15 +37,25 @@ const fetchTransactions = async () => {
     }
 
     try {
-        const response = await fetch(`${BASE_URL}/transactions/user/${user.id || 1}`, {
+        console.log("User from localStorage:", user);
+        const response = await fetch(`${BASE_URL}/transactions`, {
             method: 'GET',
-            headers: { 'Authorization': `Bearer ${user.token}` }
-        });
-        if (!response.ok) throw new Error('Failed to fetch transactions');
+            headers: { 'Authorization': `Bearer ${user.token}` }        });
+        if (!response.ok) {
+            if (response.status === 401) {
+                // Token expired or invalid, redirect to login
+                console.log('Unauthorized, redirecting to login');
+                localStorage.removeItem('user');
+                window.location.href = '/project/User/html/otp.html';
+                return;
+            }
+            throw new Error(`Failed to fetch transactions: ${response.statusText}`);
+        }
         const transactions = await response.json();
         displayTransactions(transactions);
     } catch (error) {
         console.error('Error fetching transactions:', error);
+        alert('Failed to load transactions. Please try again later.');
     }
 };
 
@@ -58,14 +68,18 @@ const displayTransactions = (transactions) => {
     }
     tbody.innerHTML = '';
     transactions.forEach(tx => {
+        const dateParts = tx.tran_date.split('-');
+        const transactionDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+        const formattedDate = isNaN(transactionDate) ? 'Invalid Date' : transactionDate.toLocaleDateString();
         tbody.innerHTML += `
             <tr>
-                <td>${tx.id}</td>
+                <td>${tx.transId}</td>
                 <td>${tx.user.username}</td>
-                <td>${tx.paymentMode || 'Online'}</td>
+                <td>${tx.paymentMode}</td>
                 <td>₹${tx.amount}</td>
+                <td>${tx.validity || 'N/A'} Days</td>
                 <td>${tx.status}</td>
-                <td>${new Date(tx.transactionDate).toLocaleDateString()}</td>
+                <td>${formattedDate}</td>
             </tr>`;
     });
 };
@@ -73,17 +87,25 @@ const displayTransactions = (transactions) => {
 // Logout functionality
 const logout = async () => {
     const user = getUserData();
-    if (!user.token) return;
+    if (!user.token) {
+        window.location.href = '/project/User/html/index.html';
+        return;
+    }
 
     try {
-        await fetch(`${BASE_URL}/users/logout`, {
+        const response = await fetch(`${BASE_URL}/users/logout`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${user.token}` }
         });
-        localStorage.removeItem('user');
-        updateAuthButtonAndProfile();
+        if (!response.ok) {
+            throw new Error('Logout failed');
+        }
     } catch (error) {
         console.error('Logout failed:', error);
+    } finally {
+        // Always clear localStorage and redirect, even if logout fails
+        localStorage.removeItem('user');
+        window.location.href = '/project/User/html/index.html';
     }
 };
 

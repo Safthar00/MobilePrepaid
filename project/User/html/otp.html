@@ -217,11 +217,15 @@ const verifyOTP = async () => {
         });
         if (response.ok) {
             const result = await response.json();
+            console.log("Login response:", result); // Debug log
             const userData = {
                 token: result.token,
                 mobile: phone,
-                role: result.role
+                role: result.role,
+                username: result.username,
+                userId: result.userId
             };
+            console.log("Stored user data:", userData); // Debug log
             localStorage.setItem('user', JSON.stringify(userData));
             toggleElement('otpSuccessMessage', 'block');
             toggleElement('otpErrorMessage', 'none');

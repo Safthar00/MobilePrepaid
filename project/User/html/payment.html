@@ -28,19 +28,19 @@
         </div>
 
         <button id="payNowBtn" class="btn btn-custom w-100 mt-3">Pay Now</button>
-        <button class="btn btn-secondary w-100 mt-2" id="backToPlansBtn">Back to Plans</button>
+        <button class="btn btn-outline-secondary w-100 mt-2" id="backToPlansBtn">Back to Plans</button>
+        
+        <!-- Transaction status alert (hidden by default) -->
+        <div id="transactionAlert" class="alert alert-dismissible fade mt-3" role="alert" style="display: none;">
+            <span id="alertMessage"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     </div>
     
     <!-- Load Razorpay script with fallback -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script>
-        // Fallback if Razorpay fails to load
-        if (typeof Razorpay === 'undefined') {
-            console.error('Razorpay script failed to load');
-            document.getElementById('payNowBtn').disabled = true;
-            document.getElementById('payNowBtn').textContent = 'Payment Unavailable';
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="/project/User/js/payment.js"></script>
 </body>
 </html>
