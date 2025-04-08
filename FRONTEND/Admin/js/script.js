@@ -315,7 +315,7 @@ async function logout() {
         if (!response.ok) throw new Error('Logout failed');
         localStorage.removeItem('adminToken');
         showToast('Logged out successfully', 'success');
-        window.location.href = '/project/Admin/html/admin-login.html';
+        window.location.href = '../html/admin-login.html';
     } catch (error) {
         console.error('Error during logout:', error);
         showToast('Logout failed: ' + error.message, 'danger');

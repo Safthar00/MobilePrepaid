@@ -189,7 +189,7 @@
         async function loadProfileFromBackend() {
             const token = getAuthToken();
             if (!token) {
-                window.location.href = '/project/User/html/otp.html';
+                window.location.href = './otp.html';
                 return;
             }
 
@@ -254,7 +254,7 @@
                     toggleElement('notification', 'block');
                     setTimeout(() => {
                         toggleElement('notification', 'none');
-                        window.location.href = '/project/User/html/dashboard.html';
+                        window.location.href = './dashboard.html';
                     }, 3000);
                 } else {
                     throw new Error('Failed to update profile: ' + await response.text());

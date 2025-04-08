@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Back button
     document.getElementById('backBtn').addEventListener('click', function() {
-        window.location.href = '/project/Admin/html/admin.html';
+        window.location.href = '../html/admin.html';
     });
 
     // Load profile data when page loads

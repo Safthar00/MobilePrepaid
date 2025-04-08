@@ -231,7 +231,7 @@ const verifyOTP = async () => {
             toggleElement('otpErrorMessage', 'none');
             // Verify storage before navigation
             if (JSON.parse(localStorage.getItem('user')).token) {
-                window.location.href = '/project/User/html/dashboard.html';
+                window.location.href = './index.html';
             } else {
                 throw new Error('Token not stored correctly');
             }
