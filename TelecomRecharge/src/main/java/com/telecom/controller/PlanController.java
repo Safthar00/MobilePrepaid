@@ -18,7 +18,8 @@ public class PlanController {
     public PlanController(PlanService planService) {
         this.planService = planService;
     }
-
+    
+    //mapping plans
     @GetMapping
     public List<TelecomPlan> listPlans() {
         return planService.listPlans();
