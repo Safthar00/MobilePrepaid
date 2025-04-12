@@ -63,27 +63,16 @@ body {
     background-color: #2980b9;
 }
 
-/* Responsive adjustments */
-@media (max-width: 991px) {
-    .navbar-nav {
-        align-items: stretch;
-    }
-
-    .nav-link {
-        text-align: center;
-    }
-
-    #authButton {
-        width: 100%;
-        margin-top: 0.5rem;
-    }
+#quickMobileNumber:focus {
+    box-shadow: none;
+    border-color: inherit;
 }
 
+/* Features Section (Popular Plans) */
 .features-section {
     padding: 50px 0;
     background-color: white;
 }
-
 
 .plan-card {
     border: none;
@@ -95,12 +84,21 @@ body {
     transform: translateY(-10px);
 }
 
-.footer {
+#proceedToPaymentBtn {
     background-color: var(--primary-color);
+    border-color: var(--primary-color);
     color: white;
-    padding: 50px 0;
 }
 
+#proceedToPaymentBtn:hover {
+    background-color: #001a36;
+    border-color: #001a36;
+}
+#modalMobileNumber{
+    box-shadow: none;
+    border-color: var(--text-dark);
+}
+/* Customer Reviews Section */
 .customer-reviews-section {
     background-color: white;
     padding: 50px 0;
@@ -112,15 +110,32 @@ body {
     padding: 20px;
     margin: 15px 0;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.customer-review-card:hover {
+    transform: translateY(-10px);
+}
+
+.review-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 15px;
 }
 
 .customer-review-card .rating {
     color: #ffc107;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .customer-review-card .review-text {
     font-style: italic;
+    font-size: 0.9rem;
+    color: #555;
 }
 
 .reviews-control-btn {
@@ -128,7 +143,7 @@ body {
     top: -50px;
     right: 5em;
     display: flex;
-    gap: 20px; /* Add space between navigation buttons */
+    gap: 20px;
 }
 
 .reviews-control-btn .carousel-control-prev,
@@ -142,7 +157,7 @@ body {
     color: var(--primary-color);
     padding: 10px;
     border-radius: 100%;
-    transition: background .6s ease;
+    transition: background 0.3s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -153,6 +168,66 @@ body {
 .reviews-control-btn i:hover {
     background: var(--primary-color);
     color: white;
+}
+
+/* Custom Carousel Animation (Left-to-Right Flow) */
+.carousel-left-to-right .carousel-item {
+    transition: transform 0.6s ease-in-out;
+}
+
+.carousel-left-to-right .carousel-item-next,
+.carousel-left-to-right .carousel-item-prev {
+    transform: translateX(0);
+}
+
+.carousel-left-to-right .carousel-item-next.carousel-item-start,
+.carousel-left-to-right .carousel-item-prev.carousel-item-end {
+    transform: translateX(0);
+}
+
+.carousel-left-to-right .carousel-item-end {
+    transform: translateX(-100%);
+}
+
+.carousel-left-to-right .carousel-item-start {
+    transform: translateX(100%);
+}
+
+.carousel-left-to-right .carousel-item-end.carousel-item-next,
+.carousel-left-to-right .carousel-item-start.carousel-item-prev {
+    transform: translateX(0);
+}
+
+.carousel-left-to-right .carousel-item {
+    transform: translateX(0);
+}
+
+/* Footer */
+.footer {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 50px 0;
+}
+
+#scrollToTopBtn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    border: none;
+    outline: none;
+    background-color: #2a28a7;
+    color: white;
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 50%;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+#scrollToTopBtn:hover {
+    background-color: #413fb5;
 }
 
 /* Modal Animation Styles */
@@ -180,22 +255,81 @@ body {
     padding: 15px;
     border-radius: 5px;
 }
-#scrollToTopBtn {
-display: none;
-position: fixed;
-bottom: 20px;
-right: 20px;
-z-index: 1000;
-border: none;
-outline: none;
-background-color: #2a28a7;
-color: white;
-cursor: pointer;
-padding: 10px 15px;
-border-radius: 50%;
-font-size: 18px;
-transition: background-color 0.3s ease;
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+    .navbar-nav {
+        align-items: stretch;
+    }
+
+    .nav-link {
+        text-align: center;
+    }
+
+    #authButton {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+
+    .reviews-control-btn {
+        right: 2em;
+        top: -40px;
+    }
+
+    .reviews-control-btn i {
+        width: 40px;
+        height: 40px;
+        padding: 8px;
+    }
 }
-#scrollToTopBtn:hover {
-background-color: #413fb5;
+
+@media (max-width: 767px) {
+    .customer-review-card {
+        margin: 10px 0;
+        padding: 15px;
+    }
+
+    .review-avatar {
+        width: 60px;
+        height: 60px;
+    }
+
+    .customer-review-card .review-text {
+        font-size: 0.85rem;
+    }
+
+    .reviews-control-btn {
+        top: -35px;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .customer-reviews-section {
+        padding: 30px 0;
+    }
+
+    .customer-review-card {
+        margin-bottom: 20px;
+    }
+
+    .review-avatar {
+        width: 50px;
+        height: 50px;
+    }
+
+    .customer-review-card .h5 {
+        font-size: 1rem;
+    }
+
+    .reviews-control-btn {
+        right: 1em;
+        top: -30px;
+    }
+
+    .reviews-control-btn i {
+        width: 35px;
+        height: 35px;
+        padding: 6px;
+    }
 }

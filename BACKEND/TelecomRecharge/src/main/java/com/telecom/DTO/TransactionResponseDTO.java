@@ -33,13 +33,19 @@ public class TransactionResponseDTO {
     @JsonProperty("user_id")
     private Long userId;
 
+    @JsonProperty("customer_name")
+    private String customerName;
+
+    @JsonProperty("phone_number")
+    private String phoneNumber;
+    
     // Default constructor (required for Jackson deserialization)
     public TransactionResponseDTO() {
     }
 
     // Parameterized constructor (optional, for convenience)
     public TransactionResponseDTO(String transId, Double amount, String validity, String paymentMode,
-                                 String status, Date tranDate, Long userId) {
+                                 String status, Date tranDate, Long userId, String customerName, String phoneNumber) {
         this.transId = transId;
         this.amount = amount;
         this.validity = validity;
@@ -47,5 +53,7 @@ public class TransactionResponseDTO {
         this.status = status;
         this.tranDate = tranDate;
         this.userId = userId;
+        this.customerName = customerName;
+        this.phoneNumber = phoneNumber;
     }
 }

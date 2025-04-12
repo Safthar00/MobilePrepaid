@@ -89,4 +89,39 @@ public class TransactionController {
             return ResponseEntity.status(500).body(null);
         }
     }
+    
+    @GetMapping("/expiring")
+    public ResponseEntity<List<TransactionResponseDTO>> getExpiringTransactions(
+            @RequestParam(defaultValue = "3") int days,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.badRequest().body(null);
+            }
+            String token = authHeader.substring(7);
+            String username = tokenMgr.getUsernameFromToken(token);
+            Users user = acctRepo.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            
+            List<Transaction> transactions = transactionService.getExpiringTransactions(days);
+            List<TransactionResponseDTO> responseDTOs = transactions.stream().map(transaction -> {
+                TransactionResponseDTO dto = new TransactionResponseDTO();
+                dto.setTransId(transaction.getTransId());
+                dto.setAmount(transaction.getAmount());
+                dto.setValidity(transaction.getValidity());
+                dto.setPaymentMode(transaction.getPaymentMode());
+                dto.setStatus(transaction.getStatus());
+                dto.setTranDate(transaction.getTranDate());
+                dto.setUserId(transaction.getUser().getUserId());
+                dto.setCustomerName(transaction.getUser().getFirstName() + " " + transaction.getUser().getLastName());
+                dto.setPhoneNumber(transaction.getUser().getPhone());
+                return dto;
+            }).collect(Collectors.toList());
+            return ResponseEntity.ok(responseDTOs);
+        } catch (Exception e) {
+            System.err.println("Error retrieving expiring transactions: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 }

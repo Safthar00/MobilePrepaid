@@ -38,7 +38,7 @@ public class Acl {
                 .requestMatchers("/users/signup/**", "/users/login/**","/users/quick-recharge").permitAll()
                 .requestMatchers("/plans/add", "/plans/modify/**", "/plans/delete/**").hasRole("ADMIN")
                 .requestMatchers("/categories/add", "/categories/modify/**","/users/registered-users","/categories/delete/**","/plans/toggle-status/**").hasRole("ADMIN")
-                .requestMatchers("/plans/**", "/categories/**","/exp-plans/**","/support/**","/customer-reviews/**","/transactions/**").permitAll()
+                .requestMatchers("/plans/**", "/categories/**","/expiring/**","/support/**","/customer-reviews/**","/transactions/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

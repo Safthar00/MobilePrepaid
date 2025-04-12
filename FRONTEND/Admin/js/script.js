@@ -51,6 +51,73 @@ function showToast(message, type = 'primary') {
     });
 }
 
+async function loadExpiringPlans() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/transactions/expiring?days=3`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+        if (!response.ok) throw new Error('Failed to fetch expiring plans');
+        const transactions = await response.json();
+
+        const tableBody = document.querySelector('#expiring-plans-table tbody');
+        tableBody.innerHTML = '';
+        transactions.forEach(tx => {
+            // Calculate expiry date
+            const tranDate = new Date(tx.tran_date);
+            const validityDays = parseInt(tx.validity, 10) || 0;
+            const expiryDate = new Date(tranDate);
+            expiryDate.setDate(tranDate.getDate() + validityDays);
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${tx.customer_name || 'Unknown'}</td>
+                <td>${tx.phone_number || 'N/A'}</td>
+                <td>Plan ₹${tx.amount}</td>
+                <td>${formatDate(expiryDate)}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary notify-btn" data-user-id="${tx.user_id}">
+                        <i class="fas fa-bell"></i> Notify
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        // Add event listeners for notify buttons
+        document.querySelectorAll('.notify-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const userId = this.getAttribute('data-user-id');
+                notifyUser(userId);
+            });
+        });
+
+        // Add search functionality
+        document.getElementById('expiring-plans-search').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#expiring-plans-table tbody tr');
+            rows.forEach(row => {
+                const name = row.cells[0].textContent.toLowerCase();
+                const phone = row.cells[1].textContent.toLowerCase();
+                row.style.display = (name.includes(searchTerm) || phone.includes(searchTerm)) ? '' : 'none';
+            });
+        });
+    } catch (error) {
+        console.error('Error loading expiring plans:', error);
+        showToast('Failed to load expiring plans: ' + error.message, 'danger');
+    }
+}
+
+async function notifyUser(userId) {
+    try {
+        showToast(`Notification sent to user ${userId}`, 'success');
+        // Future: Implement actual notification API call
+    } catch (error) {
+        console.error('Error notifying user:', error);
+        showToast('Failed to notify user: ' + error.message, 'danger');
+    }
+}
+
 function loadAnalytics() {
     // Static Chart Data
     const subscribersGrowthData = {
@@ -428,6 +495,7 @@ document.addEventListener('DOMContentLoaded', function () {
     loadAnalytics();
     loadUsers();
     loadRechargePlans();
+    loadExpiringPlans();
 
     // Setup sidebar and navigation
     setupSidebarAndNavigation();
