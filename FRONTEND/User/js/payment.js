@@ -42,6 +42,13 @@ function initiateRazorpayPayment() {
                 console.log("Transaction save response:", responseData);
                 if (saveResponse.ok) {
                     // Redirect to success page on successful save
+                    sessionStorage.setItem("transactionDetails", JSON.stringify({
+                        mobileNumber: localStorage.getItem("rechargeMobile") || "Not Available",
+                        planDetails: `₹${price}, ${selectedPlan.data || "0"}GB, ${validity} days`,
+                        amount: `₹${price}`,
+                        paymentMode: "RAZORPAY",
+                        transactionId: transId
+                    }));
                     window.location.href = "../html/success.html";
                 } else {
                     throw new Error("Failed to save transaction");

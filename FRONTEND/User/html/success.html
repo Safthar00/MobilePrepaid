@@ -285,31 +285,32 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Fetch stored details from localStorage
-            const mobileNumber = localStorage.getItem("mobileNumber") || "Not Available";
-            const planPrice = localStorage.getItem("planPrice") || "0";
-            const planData = localStorage.getItem("planData") || "0";
-            const planValidity = localStorage.getItem("planValidity") || "0";
-            const planOtt = localStorage.getItem("planOtt") || "None";
-            const paymentMode = localStorage.getItem("paymentMode") || "Credit/Debit Card";
-            const transactionId = localStorage.getItem("transactionId") || "TXN000000000";
-
+            // Fetch stored details from sessionStorage
+            const transactionDetails = JSON.parse(sessionStorage.getItem("transactionDetails")) || {
+                mobileNumber: "Not Available",
+                planDetails: "₹0, 0GB, 0 days",
+                amount: "₹0",
+                paymentMode: "Credit/Debit Card",
+                transactionId: "TXN000000000"
+            };
+        
             // Display details in the modal
-            document.getElementById("modal-phone-number").textContent = mobileNumber;
-            document.getElementById("modal-plan-details").textContent = `₹${planPrice}, ${planData}GB, ${planValidity} days`;
-            document.getElementById("modal-amount").textContent = `₹${planPrice}`;
-            document.getElementById("modal-payment-mode").textContent = paymentMode;
-            document.getElementById("modal-transaction-id").textContent = transactionId;
-
-            // Show modal automatically (force it to display)
+            document.getElementById("modal-phone-number").textContent = transactionDetails.mobileNumber;
+            document.getElementById("modal-plan-details").textContent = transactionDetails.planDetails;
+            document.getElementById("modal-amount").textContent = transactionDetails.amount;
+            document.getElementById("modal-payment-mode").textContent = transactionDetails.paymentMode;
+            document.getElementById("modal-transaction-id").textContent = transactionDetails.transactionId;
+        
+            // Show modal automatically
             const successModalElement = document.getElementById('successModal');
             successModalElement.classList.add('show');
             successModalElement.style.display = 'block';
             document.body.classList.add('modal-open');
-
+        
             // Handle Done button click
             document.getElementById("done-button").addEventListener("click", function () {
-                // Clear the localStorage
+                // Clear sessionStorage and localStorage
+                sessionStorage.removeItem("transactionDetails");
                 localStorage.removeItem("mobileNumber");
                 localStorage.removeItem("planPrice");
                 localStorage.removeItem("planData");
@@ -317,18 +318,28 @@
                 localStorage.removeItem("planOtt");
                 localStorage.removeItem("paymentMode");
                 localStorage.removeItem("transactionId");
-                localStorage.removeItem('rechargeMobile'); // Get rechargeMobile
-                
+                localStorage.removeItem("rechargeMobile");
+                localStorage.removeItem("selectedPlan");
                 // Redirect to home page
                 window.location.href = "./index.html";
             });
-
+        
             // Handle close button click
             document.querySelector(".btn-close").addEventListener("click", function() {
+                // Clear sessionStorage and localStorage
+                sessionStorage.removeItem("transactionDetails");
+                localStorage.removeItem("mobileNumber");
+                localStorage.removeItem("planPrice");
+                localStorage.removeItem("planData");
+                localStorage.removeItem("planValidity");
+                localStorage.removeItem("planOtt");
+                localStorage.removeItem("paymentMode");
+                localStorage.removeItem("transactionId");
+                localStorage.removeItem("rechargeMobile");
+                localStorage.removeItem("selectedPlan");
                 window.location.href = "./index.html";
             });
         });
-        
-    </script>
+        </script>
 </body>
 </html>
