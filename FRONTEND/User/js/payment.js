@@ -42,17 +42,48 @@ function initiateRazorpayPayment() {
                 console.log("Transaction save response:", responseData);
                 if (saveResponse.ok) {
                     // Redirect to success page on successful save
-                    sessionStorage.setItem("transactionDetails", JSON.stringify({
+                    const transactionDetails = {
                         mobileNumber: localStorage.getItem("rechargeMobile") || "Not Available",
                         planDetails: `₹${price}, ${selectedPlan.data || "0"}GB, ${validity} days`,
                         amount: `₹${price}`,
                         paymentMode: "RAZORPAY",
                         transactionId: transId
-                    }));
-                    window.location.href = "../html/success.html";
-                } else {
-                    throw new Error("Failed to save transaction");
-                }
+                    };
+                    
+                    // Store in sessionStorage
+                    sessionStorage.setItem("transactionDetails", JSON.stringify(transactionDetails));
+                    // Generate PDF invoice
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(18);
+            doc.text("TelecomX Invoice", 20, 20);
+            doc.setFontSize(12);
+            doc.text(`Transaction ID: ${transId}`, 20, 40);
+            doc.text(`Mobile Number: ${transactionDetails.mobileNumber}`, 20, 50);
+            doc.text(`Plan: ${transactionDetails.planDetails}`, 20, 60);
+            doc.text(`Amount: ${transactionDetails.amount}`, 20, 70);
+            doc.text(`Payment Mode: ${transactionDetails.paymentMode}`, 20, 80);
+            doc.text(`Date: ${transactionData.tran_date}`, 20, 90);
+            const pdfBase64 = doc.output('datauristring').split(',')[1]; 
+            console.log("Generated pdfBase64:", pdfBase64);
+            // Send PDF to backend for emailing
+            const emailResponse = await fetch(`${BASE_URL}/transactions/send-invoice`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId: user.userId,
+                    pdfBase64: pdfBase64,
+                    transactionId: transId
+                })
+            });
+            if (!emailResponse.ok) {
+                console.error("Failed to send invoice email:", await emailResponse.text());
+                alert("Payment successful, but failed to send invoice email. Please contact support.");
+            }
+                window.location.href = "../html/success.html";
+            } else {
+                throw new Error("Failed to save transaction");
+            }
             } catch (error) {
                 console.error("Error saving transaction:", error);
                 alert("Payment was successful, but there was an issue saving the transaction. Please contact support.");
@@ -108,7 +139,9 @@ function initiateRazorpayPayment() {
 async function saveTransaction(transactionData) {
     const response = await fetch(`${BASE_URL}/transactions`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("jwtToken") || ""}`
+         },
         body: JSON.stringify(transactionData),
     });
     console.log("Sending transaction data:", transactionData);

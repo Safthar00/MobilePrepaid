@@ -306,7 +306,7 @@
             successModalElement.classList.add('show');
             successModalElement.style.display = 'block';
             document.body.classList.add('modal-open');
-        
+            
             // Handle Done button click
             document.getElementById("done-button").addEventListener("click", function () {
                 // Clear sessionStorage and localStorage
@@ -320,7 +320,7 @@
                 localStorage.removeItem("transactionId");
                 localStorage.removeItem("rechargeMobile");
                 localStorage.removeItem("selectedPlan");
-                // Redirect to home page
+
                 window.location.href = "./index.html";
             });
         

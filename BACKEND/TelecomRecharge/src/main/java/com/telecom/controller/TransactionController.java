@@ -1,11 +1,13 @@
 package com.telecom.controller;
 
+import com.telecom.DTO.InvoiceRequestDTO;
 import com.telecom.DTO.TransactionRequestDTO;
 import com.telecom.DTO.TransactionResponseDTO;
 import com.telecom.model.Transaction;
 import com.telecom.model.Users;
 import com.telecom.repository.UsersRepo;
 import com.telecom.security.TokenManager;
+import com.telecom.service.EmailService;
 import com.telecom.service.TransactionService;
 
 import java.util.List;
@@ -27,6 +29,9 @@ public class TransactionController {
 
     @Autowired
     private TokenManager tokenMgr;
+    
+    @Autowired
+    private EmailService emailService;
     
     @PostMapping
     public ResponseEntity<?> createTransaction(@RequestBody TransactionRequestDTO request) {
@@ -122,6 +127,24 @@ public class TransactionController {
             System.err.println("Error retrieving expiring transactions: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(500).body(null);
+        }
+    }
+    
+    @PostMapping("/send-invoice")
+    public ResponseEntity<?> sendInvoice(@RequestBody InvoiceRequestDTO request) {
+        try {
+            // Fetch the user
+        	System.out.println("Received pdfBase64: " + request.getPdfBase64()); // Add this line
+            Users user = acctRepo.findById(request.getUserId())
+                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + request.getUserId()));
+            
+            // Send email with PDF
+            emailService.sendInvoiceEmail(user.getEmail(), request.getPdfBase64(), request.getTransactionId());
+            return ResponseEntity.ok("Invoice email sent successfully");
+        } catch (Exception e) {
+            System.err.println("Error sending invoice email: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error sending invoice email: " + e.getMessage());
         }
     }
 }
